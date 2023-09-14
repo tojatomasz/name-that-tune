@@ -6,7 +6,7 @@ import { TFunction } from 'i18next';
 import GuessItem from '../components/GuessItem';
 import Button from '../components/Button';
 
-import { initialize, toggleNowPlaying, checkGuess, saveStats, stageToTime } from '../logic';
+import { initialize, toggleNowPlaying, checkGuess, saveStats, stageToTime, updateSimilarity, showHint } from '../logic';
 import AudioManager from '../AudioManager';
 
 enum GameState {
@@ -23,6 +23,7 @@ class Game extends React.Component<
   {
     stage: number;
     guess: string;
+    hint: number;
     guesses: (string | null)[];
     gameState: GameState;
   }
@@ -32,6 +33,8 @@ class Game extends React.Component<
     stage: 0,
     // The current guess
     guess: '',
+    // Current hint
+    hint: 0,
     // Past guesses
     guesses: [],
     gameState: GameState.Playing,
@@ -104,6 +107,11 @@ class Game extends React.Component<
         this.audioManager.setEnd(stageToTime(this.state.stage));
       }
     });
+    };
+
+  giveHint = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      showHint(++this.state.hint)
   };
 
   giveUp = () => {
@@ -119,6 +127,8 @@ class Game extends React.Component<
   };
 
   nextSong = () => {
+    updateSimilarity(-1);
+    showHint(-1);
     toggleNowPlaying(false);
     Spicetify.Player.next();
     Spicetify.Player.seek(0);
@@ -131,6 +141,8 @@ class Game extends React.Component<
       guess: '',
       // Increment the stage
       stage: 0,
+      // Reset hint count
+      hint: 0,
       gameState: GameState.Playing,
     }, () => {
       this.audioManager.setEnd(stageToTime(this.state.stage));
@@ -162,7 +174,8 @@ class Game extends React.Component<
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
           {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
-
+          <b className='hint'></b>
+          <b className='similarity'></b>
           <form onSubmit={this.submitGuess}>
             <input
               type={'text'}
@@ -175,6 +188,9 @@ class Game extends React.Component<
             <div className={styles.formButtonContainer}>
               <Button onClick={this.submitGuess} disabled={!isPlaying}>
                 {t('guessBtn')}
+              </Button>
+              <Button onClick={this.giveHint} disabled={!isPlaying}>
+                {t('hintBtn')}
               </Button>
               <Button onClick={this.skipGuess} disabled={!isPlaying}>
                 {t('skipBtn')}

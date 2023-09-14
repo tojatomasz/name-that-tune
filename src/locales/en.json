@@ -6,6 +6,7 @@
     "guessPlaceholder": "Guess the song",
     "playXSeconds": "Play {{count}}s",
     "guessBtn": "Guess",
+    "hintBtn": "Hint",
     "skipBtn": "Skip",
     "giveUp": "Give up",
     "nextSong": "Next song",

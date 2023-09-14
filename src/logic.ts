@@ -48,6 +48,38 @@ const normalize = (str: string) => {
   return cleaned;
 };
 
+export const updateSimilarity = (similarity: number) => {
+    if (similarity == -1) {
+        document.querySelector('.similarity').innerText = '';
+        return;
+    }
+    const similarityValue = (similarity * 100).toFixed(2);
+    document.querySelector('.similarity').innerText = 'Title similarity: ' + similarityValue + '%';
+}
+
+export const showHint = (hint: number) => {
+    if (hint == -1) {
+        document.querySelector('.hint').innerText = '';
+        return;
+    }
+
+    const name = Spicetify.Player.data.track.metadata?.title;
+    if (name) {
+        const trimmedName = name.replace(/\s+/g, ' '); // Usuń ewentualne dodatkowe spacje
+        const currentHint = trimmedName
+            .split(' ')
+            .map((word) => {
+                return word
+                    .split('')
+                    .map((char, index) => (index < hint ? char : '_'))
+                    .join('');
+            })
+            .join(' ');
+
+        document.querySelector('.hint').innerText = 'Hint: ' + currentHint;
+    }
+};
+
 export const checkGuess = (guess: string) => {
   console.log({
     title: Spicetify.Player.data.track.metadata.title,
@@ -74,8 +106,7 @@ export const checkGuess = (guess: string) => {
   // }
 
   const similarity = diceCoefficient(normalizedGuess, normalizedTitle);
-  console.log({ similarity });
-
+  updateSimilarity(similarity);
   return similarity > 0.8;
 };
 
