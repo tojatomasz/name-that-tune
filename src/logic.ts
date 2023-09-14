@@ -107,6 +107,7 @@ export const checkGuess = (guess: string) => {
 
   const similarity = diceCoefficient(normalizedGuess, normalizedTitle);
   updateSimilarity(similarity);
+  console.log({ similarity });
   return similarity > 0.8;
 };
 
