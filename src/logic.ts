@@ -28,20 +28,20 @@ export const toggleNowPlaying = (visible: boolean) => {
 };
 
 // TODO: potentially tweak this
-const normalize = (str: string) => {
+const normalize = (str: string, keepSpaces: boolean = false) => {
   let cleaned = str.trim().toLowerCase();
 
-  // Remove anything within parentheses
-  cleaned = cleaned.replace(/\(.*\)/g, '');
-
-  // Remove anything that comes after a ' - '
-  cleaned = cleaned.replace(/\s-\s.*$/, '');
+  // Remove anything within parentheses and anything that comes after a ' - '
+  cleaned = cleaned.replace(/\([^)]*\)|\s-\s.*$/, '');
 
   // Convert & to 'and'
   cleaned = cleaned.replace(/&/g, 'and');
 
-  // Remove special characters and spaces
-  cleaned = cleaned.replace(/[^\wа-яА-ЯіїІЇ\d]/g, '');
+  // Remove everything that is not a number, letter, Cyrylic alphabet, Polish alphabet or space
+  cleaned = cleaned.replace(/[^\wа-яА-ЯіїІЇ\dąćęłńóśźż\s]/g, '');
+  
+  // Remove spaces
+  if(!keepSpaces) cleaned = cleaned.replace(/\s/g, '');
 
   // TODO: add any other logic?
 
@@ -54,7 +54,7 @@ export const updateSimilarity = (similarity: number) => {
         return;
     }
     const similarityValue = (similarity * 100).toFixed(2);
-    document.querySelector('.similarity').innerText = 'Title similarity: ' + similarityValue + '%';
+    document.querySelector('.similarity').innerText = `Title similarity: ${similarityValue}%`;
 }
 
 export const showHint = (hint: number) => {
@@ -63,22 +63,16 @@ export const showHint = (hint: number) => {
         return;
     }
 	const title = Spicetify.Player.data.track.metadata?.title;
-	let cleanedTitle = title.trim().toLowerCase();
-	// Remove anything within parentheses and everything after -
-	cleanedTitle = cleanedTitle.replace(/\(.*\)/g, '');
-	cleanedTitle = cleanedTitle.replace(/\s-\s.*$/, '');
-
-    const trimmedName = cleanedTitle.replace(/\s+/g, ' '); // Usuń ewentualne dodatkowe spacje
-    const currentHint = trimmedName
-        .split(' ')
-        .map((word) => {
-            return word
-                .split('')
-                .map((char, index) => (index < hint ? char : '*'))
-                .join('');
-        })
-        .join(' ');
-    document.querySelector('.hint').innerText = 'Hint: ' + currentHint;
+  const currentHint = normalize(title, true)
+      .split(' ')
+      .map((word) => {
+          return word
+              .split('')
+              .map((char, index) => (index < hint ? char : '*'))
+              .join('');
+      })
+      .join(' ');
+  document.querySelector('.hint').innerText = `Hint: ${currentHint}`;
 };
 
 export const checkGuess = (guess: string) => {
