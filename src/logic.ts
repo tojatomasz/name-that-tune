@@ -62,22 +62,23 @@ export const showHint = (hint: number) => {
         document.querySelector('.hint').innerText = '';
         return;
     }
+	const title = Spicetify.Player.data.track.metadata?.title;
+	let cleanedTitle = title.trim().toLowerCase();
+	// Remove anything within parentheses and everything after -
+	cleanedTitle = cleanedTitle.replace(/\(.*\)/g, '');
+	cleanedTitle = cleanedTitle.replace(/\s-\s.*$/, '');
 
-    const name = Spicetify.Player.data.track.metadata?.title;
-    if (name) {
-        const trimmedName = name.replace(/\s+/g, ' '); // Usuń ewentualne dodatkowe spacje
-        const currentHint = trimmedName
-            .split(' ')
-            .map((word) => {
-                return word
-                    .split('')
-                    .map((char, index) => (index < hint ? char : '_'))
-                    .join('');
-            })
-            .join(' ');
-
-        document.querySelector('.hint').innerText = 'Hint: ' + currentHint;
-    }
+    const trimmedName = cleanedTitle.replace(/\s+/g, ' '); // Usuń ewentualne dodatkowe spacje
+    const currentHint = trimmedName
+        .split(' ')
+        .map((word) => {
+            return word
+                .split('')
+                .map((char, index) => (index < hint ? char : '*'))
+                .join('');
+        })
+        .join(' ');
+    document.querySelector('.hint').innerText = 'Hint: ' + currentHint;
 };
 
 export const checkGuess = (guess: string) => {
