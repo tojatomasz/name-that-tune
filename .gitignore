@@ -151,3 +151,4 @@ dist/
 
 # icon WIP files
 icons/
+package-lock.json
