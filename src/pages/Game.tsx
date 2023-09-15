@@ -174,8 +174,8 @@ class Game extends React.Component<
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
           {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
-          <b className='hint'></b>
-          <b className='similarity'></b>
+          <h2 className='hint'></h2>
+          <h2 className='similarity'></h2>
           <form onSubmit={this.submitGuess}>
             <input
               type={'text'}
