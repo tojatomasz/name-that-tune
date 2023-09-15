@@ -111,7 +111,7 @@ class Game extends React.Component<
 
   giveHint = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      showHint(++this.state.hint)
+      showHint(this.state.hint++)
   };
 
   giveUp = () => {
