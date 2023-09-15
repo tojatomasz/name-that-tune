@@ -31,8 +31,11 @@ export const toggleNowPlaying = (visible: boolean) => {
 const normalize = (str: string, keepSpaces: boolean = false) => {
   let cleaned = str.trim().toLowerCase();
 
-  // Remove anything within parentheses and anything that comes after a ' - '
-  cleaned = cleaned.replace(/\([^)]*\)|\s-\s.*$/, '');
+  // Remove anything within parentheses
+  cleaned = cleaned.replace(/\(.*\)/g, '');
+
+  // Remove anything that comes after a ' - '
+  cleaned = cleaned.replace(/\s-\s.*$/, '');
 
   // Convert & to 'and'
   cleaned = cleaned.replace(/&/g, 'and');
