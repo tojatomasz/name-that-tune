@@ -28,7 +28,9 @@ export const toggleNowPlaying = (visible: boolean) => {
 };
 
 // TODO: potentially tweak this
-const normalize = (str: string, keepSpaces: boolean = false) => {
+const normalize = (str: string | undefined, keepSpaces: boolean = false) => {
+  if (!str) return '';
+  
   let cleaned = str.trim().toLowerCase();
 
   // Remove anything within parentheses
@@ -51,21 +53,11 @@ const normalize = (str: string, keepSpaces: boolean = false) => {
   return cleaned;
 };
 
-export const updateSimilarity = (similarity: number) => {
-    if (similarity == -1) {
-        document.querySelector('.similarity').innerText = '';
-        return;
-    }
-    const similarityValue = (similarity * 100).toFixed(2);
-    document.querySelector('.similarity').innerText = `Title similarity: ${similarityValue}%`;
-}
-
 export const showHint = (hint: number) => {
     if (hint == -1) {
-        document.querySelector('.hint').innerText = '';
         return;
     }
-	const title = Spicetify.Player.data.track.metadata?.title;
+	const title = Spicetify.Player.data.item?.metadata?.title;
   const currentHint = normalize(title, true)
       .split(' ')
       .map((word) => {
@@ -75,38 +67,27 @@ export const showHint = (hint: number) => {
               .join('');
       })
       .join(' ');
-  document.querySelector('.hint').innerText = `Hint: ${currentHint}`;
+  return currentHint;
 };
 
-export const checkGuess = (guess: string) => {
-  console.log({
-    title: Spicetify.Player.data.track.metadata.title,
-    guess,
-  });
-  // console.log({
-  //   artist_name: Spicetify.Player.data.track.metadata.artist_name,
-  //   album_artist_name: Spicetify.Player.data.track.metadata.album_artist_name,
-  // });
-
+export const checkSimilarity = (guess: string) => {
   const normalizedTitle = normalize(
-    Spicetify.Player.data.track.metadata.title,
+    Spicetify.Player.data.item?.metadata?.title,
   );
   const normalizedGuess = normalize(guess);
   console.log({ normalizedTitle, normalizedGuess });
 
-  // const set = FuzzySet([normalizedTitle], false);
-  // const result = set.get(normalizedGuess);
-  // if (result) {
-  //   const [similarity, match] = result.flat();
-  //   console.log({ similarity, match });
-  // } else {
-  //   console.log('no match');
-  // }
-
   const similarity = diceCoefficient(normalizedGuess, normalizedTitle);
-  updateSimilarity(similarity);
   console.log({ similarity });
-  return similarity > 0.8;
+  return similarity;
+}
+
+export const checkGuess = (guess: string) => {
+  console.log({
+    title: Spicetify.Player.data.item?.metadata?.title,
+    guess,
+  });
+  return checkSimilarity(guess) > 0.8;
 };
 
 export const initialize = (URIs?: string[]) => {

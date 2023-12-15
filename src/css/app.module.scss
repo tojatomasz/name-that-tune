@@ -11,6 +11,16 @@
   color: var(--spice-text);
 }
 
+.hint {
+  font-size: 50px;
+  color: var(--spice-text);
+}
+
+.similarity {
+  font-size: 50px;
+  color: var(--spice-text);
+}
+
 .subtitle {
   font-size: 40px;
 }
@@ -82,4 +92,14 @@
   position: fixed !important;
   bottom: 4px;
   right: 4px;
+}
+
+.SettingsButton {
+  color: var(--spice-text) !important;
+  background-color: transparent !important;
+  padding: 12px !important;
+
+  position: fixed !important;
+  bottom: 4px;
+  left: 4px;
 }
