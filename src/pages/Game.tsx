@@ -6,7 +6,7 @@ import { TFunction } from 'i18next';
 import GuessItem from '../components/GuessItem';
 import Button from '../components/Button';
 
-import { initialize, toggleNowPlaying, checkGuess, saveStats, stageToTime, updateSimilarity, showHint } from '../logic';
+import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint } from '../logic';
 import AudioManager from '../AudioManager';
 
 enum GameState {
@@ -23,7 +23,9 @@ class Game extends React.Component<
   {
     stage: number;
     guess: string;
-    hint: number;
+    hintCount: number;
+    hint: string;
+    similarity: string;
     guesses: (string | null)[];
     gameState: GameState;
   }
@@ -33,8 +35,12 @@ class Game extends React.Component<
     stage: 0,
     // The current guess
     guess: '',
-    // Current hint
-    hint: 0,
+    // Current hint counter
+    hintCount: 0,
+    // Current similarity
+    similarity: '',
+    //Current hint
+    hint: '',
     // Past guesses
     guesses: [],
     gameState: GameState.Playing,
@@ -64,6 +70,11 @@ class Game extends React.Component<
 
   guessChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ guess: e.target.value });
+  
+  updateSimilarity = () => {
+      const similarityScore = (checkSimilarity(this.state.guess) * 100).toFixed(0);
+      this.setState({ similarity: similarityScore.toString() + '%' });
+    };
 
   skipGuess = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -85,7 +96,7 @@ class Game extends React.Component<
 
     // Don't allow empty guesses
     if (this.state.guess.trim().length === 0) return;
-
+    this.updateSimilarity();
     const won = checkGuess(this.state.guess);
     if (won) saveStats(this.state.stage);
 
@@ -111,7 +122,7 @@ class Game extends React.Component<
 
   giveHint = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      showHint(this.state.hint++)
+      this.setState({hint: showHint(this.state.hintCount++) || ''})
   };
 
   giveUp = () => {
@@ -127,8 +138,6 @@ class Game extends React.Component<
   };
 
   nextSong = () => {
-    updateSimilarity(-1);
-    showHint(-1);
     toggleNowPlaying(false);
     Spicetify.Player.next();
     Spicetify.Player.seek(0);
@@ -142,7 +151,9 @@ class Game extends React.Component<
       // Increment the stage
       stage: 0,
       // Reset hint count
-      hint: 0,
+      hint: '',
+      hintCount: 0,
+      similarity: '',
       gameState: GameState.Playing,
     }, () => {
       this.audioManager.setEnd(stageToTime(this.state.stage));
@@ -164,6 +175,16 @@ class Game extends React.Component<
     });
   };
 
+  goToSettings = () => {
+    Spicetify.Platform.History.push({
+      pathname: '/name-that-tune/settings',
+      state: {
+        data: {
+        },
+      },
+    });
+  };
+
   render() {
     const gameWon = this.state.gameState === GameState.Won;
     const isPlaying = this.state.gameState === GameState.Playing;
@@ -174,8 +195,8 @@ class Game extends React.Component<
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
           {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
-          <h2 className='hint'></h2>
-          <h2 className='similarity'></h2>
+          <h2 className={styles.hint}>{(this.state.hint)}</h2>
+          <h2 className={styles.similarity}>{(this.state.similarity)}</h2>
           <form onSubmit={this.submitGuess}>
             <input
               type={'text'}
@@ -220,6 +241,9 @@ class Game extends React.Component<
           </ol>
           <Button onClick={this.goToStats} classes={[styles.StatsButton]}>
             {t('stats.title')}
+          </Button>
+          <Button onClick={this.goToSettings} classes={[styles.SettingsButton]}>
+            {t('settings.title')}
           </Button>
         </div>
       </>
