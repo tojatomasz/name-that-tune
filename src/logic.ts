@@ -152,8 +152,9 @@ export const checkGuess = (guess: string) => {
     title: Spicetify.Player.data.item?.metadata?.title,
     guess,
   });
-  console.log('Similarity requirement: ' + JSON.stringify(getSettings().similarityRequirement));
-  return checkSimilarity(guess) > getSettings().similarityRequirement || 0.8;
+  const similarityRequirement = getSettings().similarityRequirement;
+  console.log('Similarity requirement: ' + similarityRequirement);
+  return checkSimilarity(guess) >= similarityRequirement;
 };
 
 export const initialize = (URIs?: string[]) => {
