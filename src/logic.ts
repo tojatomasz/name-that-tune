@@ -106,9 +106,15 @@ export const showHint = (hint: number) => {
 
   switch (hintSetting) {
     case 'oneLetter':
+      let nonSpaceChars = 0;
       updatedHint = currentHint
         .split('')
-        .map((char, index) => (index < hint || char === ' ' ? char : '*'))
+        .map((char) => {
+          if (char !== ' ') {
+            return nonSpaceChars++ < hint ? char : '*';
+          }
+          return ' ';
+        })
         .join('');
       break;
     case 'oneWord':
