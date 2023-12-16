@@ -108,7 +108,7 @@ export const showHint = (hint: number) => {
     case 'oneLetter':
       updatedHint = currentHint
         .split('')
-        .map((char, index) => (index < hint ? char : '*'))
+        .map((char, index) => (index < hint || char === ' ' ? char : '*'))
         .join('');
       break;
     case 'oneWord':
