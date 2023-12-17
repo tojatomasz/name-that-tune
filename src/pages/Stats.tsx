@@ -12,12 +12,12 @@ import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { getLocalStorageDataFromKey } from '../Utils';
-import { stageToTime } from '../logic';
+import { stageToTime, goBackToGame, resetStats } from '../logic';
 import { STATS_KEY } from '../constants';
 // import Button from '../components/Button';
 
 import { SavedStats } from '../types/name-that-tune';
-
+import Button from '../components/Button';
 import styles from '../css/app.module.scss';
 
 ChartJS.register(
@@ -127,6 +127,9 @@ class Stats extends React.Component<{ t: TFunction }> {
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
           <h2>{t('stats.title')}</h2>
+          <Button onClick={goBackToGame} classes={[styles.goBackToGameButton]}>
+                        {t('gobacktogamebutton')}
+          </Button>
           <p>{t('stats.winPercentage', { percentage: (winPercentage * 100).toFixed(2) })}</p>
           <table>
             <thead>
@@ -148,6 +151,9 @@ class Stats extends React.Component<{ t: TFunction }> {
           </table>
           {/* TODO: add total games played and games won vs gave up */}
           <Bar options={chartOptions} data={chartData} />
+          <Button onClick={resetStats} classes={[styles.resetButton]}>
+                        {t('stats.resetStatsButton')}
+          </Button>
         </div>
       </>
     );

@@ -11,6 +11,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import Game from './pages/Game';
 import Stats from './pages/Stats';
+import Settings from './pages/Settings'; 
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -41,9 +42,14 @@ class App extends React.Component {
     // If page state set to stats, render it
     if (location.pathname === '/name-that-tune/stats') {
       return <Stats t={t} />;
-    } // Otherwise, render the main Game
+    }
+    // If page state set to settings, render it
+    if (location.pathname === '/name-that-tune/settings') {
+      return <Settings t={t} />;
+    }
+    // Otherwise, render the main Game
     else {
-      return <Game t={t} />;
+    return <Game t={t} />;
     }
   }
 }

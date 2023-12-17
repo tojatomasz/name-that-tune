@@ -13,6 +13,7 @@
     "menuEntry": "Play $t(appName)",
     "sendingURIs_one": "Sending {{count}} URI to $t(appName)",
     "sendingURIs_other": "Sending {{count}} URIs to $t(appName)",
+    "gobacktogamebutton": "Go back to game",
     "stats": {
       "title": "Stats",
       "time": "Time",
@@ -22,7 +23,18 @@
       "songWithCount_other": "{{count}} songs",
       "gaveUp": "gave up",
       "greaterThan16": ">16s",
-      "xSeconds": "{{count}}s"
+      "xSeconds": "{{count}}s",
+      "resetStatsButton": "Reset stats"
+    },
+    "settings": {
+      "title": "Settings",
+      "hintOneLetter": "Show one letter at a time",
+      "hintOneWord": "Show one word at a time",
+      "hintOneLetterOnEachWord": "Show one letter on each word",
+      "similarityRequirement": "Similarity requirement",
+      "hintSetting": "Hint setting",
+      "similarityPercentage": "{{percentage}}%",
+      "resetSettingsButton": "Reset settings to defaults"
     }
   }
 }

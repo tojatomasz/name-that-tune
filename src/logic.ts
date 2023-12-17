@@ -3,7 +3,46 @@ import { diceCoefficient } from 'dice-coefficient';
 
 import { fetchAndPlay, shuffle, playList } from './shuffle+';
 import { getLocalStorageDataFromKey } from './Utils';
-import { STATS_KEY } from './constants';
+import { STATS_KEY, SETTINGS_KEY } from './constants';
+import { appSettings } from './types/settings';
+
+export const getSettings = (): appSettings => {
+  console.log('Getting settings at getSettings()');
+  const settings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
+  //if settings are not set, set them to default
+  if(!settings.similarityRequirement || !settings.hintSetting) {
+    console.log('Settings not set, setting to default at getSettings()');
+    return setSettingsToDefault();
+  }
+  console.log(settings);
+  return settings;
+};
+
+export const setSettingsToDefault = () => {
+  console.log('Setting settings to default at setSettingsToDefault()');
+  const defaultSettings: appSettings = {
+    similarityRequirement: 0.8,
+    hintSetting: 'oneLetter',
+    //guessSetting: 'song',
+  };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
+  window.location.reload();
+};
+
+export const goBackToGame = () => {
+  Spicetify.Platform.History.push({
+      pathname: '/name-that-tune/game',
+      state: {
+        data: {
+        },
+      },
+    });
+};
+
+export const resetStats = () => {
+  localStorage.removeItem(STATS_KEY);
+  window.location.reload();
+};
 
 export const toggleNowPlaying = (visible: boolean) => {
   // visible = true;
@@ -28,7 +67,9 @@ export const toggleNowPlaying = (visible: boolean) => {
 };
 
 // TODO: potentially tweak this
-const normalize = (str: string, keepSpaces: boolean = false) => {
+const normalize = (str: string | undefined, keepSpaces: boolean = false) => {
+  if (!str) return '';
+  
   let cleaned = str.trim().toLowerCase();
 
   // Remove anything within parentheses
@@ -51,62 +92,75 @@ const normalize = (str: string, keepSpaces: boolean = false) => {
   return cleaned;
 };
 
-export const updateSimilarity = (similarity: number) => {
-    if (similarity == -1) {
-        document.querySelector('.similarity').innerText = '';
-        return;
-    }
-    const similarityValue = (similarity * 100).toFixed(2);
-    document.querySelector('.similarity').innerText = `Title similarity: ${similarityValue}%`;
-}
-
 export const showHint = (hint: number) => {
-    if (hint == -1) {
-        document.querySelector('.hint').innerText = '';
-        return;
-    }
-	const title = Spicetify.Player.data.track.metadata?.title;
-  const currentHint = normalize(title, true)
-      .split(' ')
-      .map((word) => {
-          return word
-              .split('')
-              .map((char, index) => (index < hint ? char : '*'))
-              .join('');
-      })
-      .join(' ');
-  document.querySelector('.hint').innerText = `Hint: ${currentHint}`;
+  if (hint == -1) {
+    return;
+  }
+
+  const title = Spicetify.Player.data.item?.metadata?.title;
+  const currentHint = normalize(title, true);
+
+  const hintSetting = getSettings().hintSetting;
+  console.log('Hint setting: '+{ hintSetting });
+  let updatedHint = '';
+
+  switch (hintSetting) {
+    case 'oneLetter':
+      let nonSpaceChars = 0;
+      updatedHint = currentHint
+        .split('')
+        .map((char) => {
+          if (char !== ' ') {
+            return nonSpaceChars++ < hint ? char : '*';
+          }
+          return ' ';
+        })
+        .join('');
+      break;
+    case 'oneWord':
+      const words = currentHint.split(' ');
+      updatedHint = words
+        .map((word, index) => (index < hint ? word : '*'.repeat(word.length)))
+        .join(' ');
+      break;
+    case 'oneLetterOnEachWord':
+      updatedHint = currentHint
+        .split(' ')
+        .map((word) =>
+          word
+            .split('')
+            .map((char, index) => (index < hint ? char : '*'))
+            .join('')
+        )
+        .join(' ');
+      break;
+    default:
+      break;
+  }
+
+  return updatedHint;
 };
 
-export const checkGuess = (guess: string) => {
-  console.log({
-    title: Spicetify.Player.data.track.metadata.title,
-    guess,
-  });
-  // console.log({
-  //   artist_name: Spicetify.Player.data.track.metadata.artist_name,
-  //   album_artist_name: Spicetify.Player.data.track.metadata.album_artist_name,
-  // });
-
+export const checkSimilarity = (guess: string) => {
   const normalizedTitle = normalize(
-    Spicetify.Player.data.track.metadata.title,
+    Spicetify.Player.data.item?.metadata?.title,
   );
   const normalizedGuess = normalize(guess);
   console.log({ normalizedTitle, normalizedGuess });
 
-  // const set = FuzzySet([normalizedTitle], false);
-  // const result = set.get(normalizedGuess);
-  // if (result) {
-  //   const [similarity, match] = result.flat();
-  //   console.log({ similarity, match });
-  // } else {
-  //   console.log('no match');
-  // }
-
   const similarity = diceCoefficient(normalizedGuess, normalizedTitle);
-  updateSimilarity(similarity);
   console.log({ similarity });
-  return similarity > 0.8;
+  return similarity;
+}
+
+export const checkGuess = (guess: string) => {
+  console.log({
+    title: Spicetify.Player.data.item?.metadata?.title,
+    guess,
+  });
+  const similarityRequirement = getSettings().similarityRequirement;
+  console.log('Similarity requirement: ' + similarityRequirement);
+  return checkSimilarity(guess) >= similarityRequirement;
 };
 
 export const initialize = (URIs?: string[]) => {
