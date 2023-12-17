@@ -6,7 +6,7 @@ import { TFunction } from 'i18next';
 import GuessItem from '../components/GuessItem';
 import Button from '../components/Button';
 
-import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint } from '../logic';
+import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles } from '../logic';
 import AudioManager from '../AudioManager';
 
 enum GameState {
@@ -28,6 +28,7 @@ class Game extends React.Component<
     similarity: string;
     guesses: (string | null)[];
     gameState: GameState;
+    randomTitles: string[];
   }
 > {
   state = {
@@ -44,6 +45,7 @@ class Game extends React.Component<
     // Past guesses
     guesses: [],
     gameState: GameState.Playing,
+    randomTitles: getRandomTrackTitles(false),
   };
 
   URIs?: string[];
@@ -143,7 +145,7 @@ class Game extends React.Component<
     Spicetify.Player.seek(0);
     Spicetify.Player.pause();
     this.audioManager.setEnd(1);
-
+    
     this.setState({
       guesses: [],
       // Reset the guess
@@ -155,6 +157,7 @@ class Game extends React.Component<
       hintCount: 0,
       similarity: '',
       gameState: GameState.Playing,
+      randomTitles: getRandomTrackTitles(true),
     }, () => {
       this.audioManager.setEnd(stageToTime(this.state.stage));
     });
@@ -185,10 +188,18 @@ class Game extends React.Component<
     });
   };
 
+  handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const guess = e.currentTarget.innerText;
+    this.setState({ guess }, () => {
+      this.submitGuess(e);
+    });
+  };
+
   render() {
     const gameWon = this.state.gameState === GameState.Won;
     const isPlaying = this.state.gameState === GameState.Playing;
     const { t } = this.props;
+    
 
     return (
       <>
@@ -216,6 +227,21 @@ class Game extends React.Component<
               <Button onClick={this.skipGuess} disabled={!isPlaying}>
                 {t('skipBtn')}
               </Button>
+
+
+            </div>
+            <b/>
+            <div className={styles.formButtonContainer}>
+            {this.state.randomTitles.map((title, index) => (
+                <Button
+                  key={index}
+                  className={styles.randomTitleButton}
+                  onClick={this.handleButtonClick}
+                  disabled={!isPlaying}
+                >
+                  {title}
+                </Button>
+              ))}
             </div>
           </form>
 

@@ -44,6 +44,41 @@ export const resetStats = () => {
   window.location.reload();
 };
 
+export const getRandomTrackTitles = (next: boolean): string[] => {
+  const tracks = Spicetify.Queue.nextTracks;
+  if (tracks.length < 4) {
+    console.error('Not enough tracks in the queue');
+    return [];
+  }
+
+  const indices = new Set<number>();
+  while (indices.size < 4) {
+    indices.add(Math.floor(Math.random() * tracks.length));
+  }
+
+  const titles = Array.from(indices).map(index => {
+    const title = tracks[index].contextTrack.metadata.title;
+    return normalize(title, true);
+  });
+  
+  const currentTrackTitle = Spicetify.Player.data.item?.metadata?.title;
+  const nextTrackTitle = Spicetify.Queue.nextTracks[0].contextTrack.metadata.title;
+
+  console.log('Current title: '+currentTrackTitle);
+  console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
+
+  //when we open the game, the currentTrackTitle is current track, but when we click next, the currentTrackTitle is the previous track
+  if(next){
+    titles.push(normalize(nextTrackTitle, true));
+  }else{
+    titles.push(normalize(currentTrackTitle, true));
+  }
+  console.log('Tracks: '+titles);
+  const shuffledTitles = titles.sort(() => 0.5 - Math.random());
+  console.log('Shuffled tracks: '+shuffledTitles);
+  return shuffledTitles;
+};
+
 export const toggleNowPlaying = (visible: boolean) => {
   // visible = true;
   // Hide items that give away information while playing
@@ -69,7 +104,6 @@ export const toggleNowPlaying = (visible: boolean) => {
 // TODO: potentially tweak this
 const normalize = (str: string | undefined, keepSpaces: boolean = false) => {
   if (!str) return '';
-  
   let cleaned = str.trim().toLowerCase();
 
   // Remove anything within parentheses
@@ -96,7 +130,7 @@ export const showHint = (hint: number) => {
   if (hint == -1) {
     return;
   }
-
+  getRandomTrackTitles();
   const title = Spicetify.Player.data.item?.metadata?.title;
   const currentHint = normalize(title, true);
 
