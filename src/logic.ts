@@ -130,7 +130,6 @@ export const showHint = (hint: number) => {
   if (hint == -1) {
     return;
   }
-  getRandomTrackTitles();
   const title = Spicetify.Player.data.item?.metadata?.title;
   const currentHint = normalize(title, true);
 
