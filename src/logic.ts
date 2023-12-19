@@ -62,7 +62,9 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
   });
   
   const currentTrackTitle = Spicetify.Player.data.item?.metadata?.title;
+  if(!Spicetify.Player.data.item) {return []}
   const nextTrackTitle = Spicetify.Queue.nextTracks[0].contextTrack.metadata.title;
+  if(!Spicetify.Queue.nextTracks[0].contextTrack) {return []}
 
   console.log('Current title: '+currentTrackTitle);
   console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
