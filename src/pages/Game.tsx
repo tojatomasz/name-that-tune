@@ -230,7 +230,7 @@ class Game extends React.Component<
 
 
             </div>
-            <b/>
+            <div style={{ marginTop: '20px' }}></div>
             <div className={styles.formButtonContainer}>
             {this.state.randomTitles.map((title, index) => (
                 <Button
