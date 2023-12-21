@@ -1,0 +1,40 @@
+{
+  "translation": {
+    "appName": "Jaka To Melodia",
+    "title": "🎵 $t(appName)",
+    "winMsg": "Wygrałeś!",
+    "guessPlaceholder": "Zgadnij tytuł",
+    "playXSeconds": "Odtwórz {{count}}s",
+    "guessBtn": "Zgadnij",
+    "hintBtn": "Podpowiedź",
+    "skipBtn": "Pomiń", 
+    "giveUp": "Poddaj się",
+    "nextSong": "Następna piosenka",
+    "menuEntry": "Graj $t(appName)",  
+    "sendingURIs_one": "Wysyłanie {{count}} URI do $t(appName)",
+    "sendingURIs_other": "Wysyłanie {{count}} URIs do $t(appName)",
+    "gobacktogamebutton": "Wróć do gry",
+    "stats": {
+      "title": "Statystyki",
+      "time": "Czas",
+      "songs": "Piosenki",
+      "winPercentage": "Procent wygranych: {{percentage}}%",
+      "songWithCount_one": "{{count}} piosenka",
+      "songWithCount_other": "{{count}} piosenek",
+      "gaveUp": "poddałeś się",
+      "greaterThan16": ">16s",
+      "xSeconds": "{{count}}s",
+      "resetStatsButton": "Zresetuj statystyki"
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "hintOneLetter": "Pokaż jedną literę na raz",
+      "hintOneWord": "Pokaż jedno słowo na raz",
+      "hintOneLetterOnEachWord": "Pokaż jedną literę na każde słowo",
+      "similarityRequirement": "Wymagania podobieństwa",
+      "hintSetting": "Ustawienia podpowiedzi",
+      "similarityPercentage": "{{percentage}}%",
+      "resetSettingsButton": "Przywróć ustawienia domyślne"
+    }
+  }
+}
