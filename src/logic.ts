@@ -67,7 +67,9 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
   if(!Spicetify.Queue.nextTracks[0].contextTrack) {return []}
 
   console.log('Current title: '+currentTrackTitle);
-  console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
+  if(Spicetify.Queue.prevTracks[0]) {
+    console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
+  }
 
   //when we open the game, the currentTrackTitle is current track, but when we click next, the currentTrackTitle is the previous track
   if(next){
