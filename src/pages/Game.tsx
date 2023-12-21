@@ -188,7 +188,7 @@ class Game extends React.Component<
     });
   };
 
-  handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  handleRandomTitleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const guess = e.currentTarget.innerText;
     this.setState({ guess }, () => {
       this.submitGuess(e);
@@ -230,20 +230,19 @@ class Game extends React.Component<
 
 
             </div>
-            <div style={{ marginTop: '20px' }}></div>
-            <div className={styles.formButtonContainer}>
-            {this.state.randomTitles.map((title, index) => (
-                <Button
-                  key={index}
-                  className={styles.randomTitleButton}
-                  onClick={this.handleButtonClick}
-                  disabled={!isPlaying}
-                >
-                  {title}
-                </Button>
-              ))}
-            </div>
           </form>
+          <div className={styles.formButtonContainer}>
+          {this.state.randomTitles.map((title, index) => (
+              <Button
+                key={index}
+                classes={[styles.titleButton]}
+                onClick={this.handleRandomTitleButtonClick}
+                disabled={!isPlaying}
+              >
+                {title}
+              </Button>
+            ))}
+          </div>
 
           {isPlaying ? (
             <Button
