@@ -11,10 +11,9 @@
             }
         },
         {
-            "label": "spicetify apply",
+            "label": "spicetify apply enable-devtools",
             "type": "shell",
-            "command": "spicetify",
-            "args": ["apply"],
+            "command": "spicetify apply enable-devtools",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -24,28 +23,12 @@
                 "isDefault": true
             }
         },
-        {
-            "label": "spicetify enable-devtools",
-            "type": "shell",
-            "command": "spicetify",
-            "args": ["enable-devtools"],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        
         {
             "label": "Composite Build",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "npm run build",
-                "spicetify apply",
-                "spicetify enable-devtools"
+                "spicetify apply enable-devtools",
             ]
         }
     ]
