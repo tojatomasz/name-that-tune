@@ -68,7 +68,8 @@ class Settings extends React.Component<{ t: TFunction }> {
         return (
             <>
                 <div className={styles.container}>
-                    <h1 className={styles.title}>{t('settings.title')}</h1>
+                    <h1 className={styles.title}>{t('title')}</h1>
+                    <h2>{t('settings.title')}</h2>
                     <Button onClick={goBackToGame} classes={[styles.goBackToGameButton]}>
                         {t('gobacktogamebutton')}
                     </Button>
