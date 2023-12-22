@@ -6,7 +6,7 @@ import { TFunction } from 'i18next';
 import GuessItem from '../components/GuessItem';
 import Button from '../components/Button';
 
-import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles } from '../logic';
+import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles, getSettings } from '../logic';
 import AudioManager from '../AudioManager';
 
 enum GameState {
@@ -29,6 +29,7 @@ class Game extends React.Component<
     guesses: (string | null)[];
     gameState: GameState;
     randomTitles: string[];
+    settings: string[];
   }
 > {
   state = {
@@ -46,6 +47,7 @@ class Game extends React.Component<
     guesses: [],
     gameState: GameState.Playing,
     randomTitles: getRandomTrackTitles(false),
+    settings: getSettings(),
   };
 
   URIs?: string[];
@@ -197,6 +199,7 @@ class Game extends React.Component<
 
   render() {
     const gameWon = this.state.gameState === GameState.Won;
+    const keyboardInput = this.state.settings.inputMethod === 'keyboard';
     const isPlaying = this.state.gameState === GameState.Playing;
     const { t } = this.props;
     
@@ -208,6 +211,7 @@ class Game extends React.Component<
           {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
           <h2 className={styles.hint}>{(this.state.hint)}</h2>
           <h2 className={styles.similarity}>{(this.state.similarity)}</h2>
+          {keyboardInput &&(
           <form onSubmit={this.submitGuess}>
             <input
               type={'text'}
@@ -227,10 +231,10 @@ class Game extends React.Component<
               <Button onClick={this.skipGuess} disabled={!isPlaying}>
                 {t('skipBtn')}
               </Button>
-
-
             </div>
           </form>
+          )}
+          {!keyboardInput && (
           <div className={styles.formButtonContainer}>
           {this.state.randomTitles.map((title, index) => (
               <Button
@@ -242,7 +246,7 @@ class Game extends React.Component<
                 {title}
               </Button>
             ))}
-          </div>
+          </div>)}
 
           {isPlaying ? (
             <Button

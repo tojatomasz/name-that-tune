@@ -10,7 +10,7 @@ export const getSettings = (): appSettings => {
   console.log('Getting settings at getSettings()');
   const settings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
   //if settings are not set, set them to default
-  if(!settings.similarityRequirement || !settings.hintSetting) {
+  if(!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod) {
     console.log('Settings not set, setting to default at getSettings()');
     return setSettingsToDefault();
   }
@@ -21,6 +21,7 @@ export const getSettings = (): appSettings => {
 export const setSettingsToDefault = () => {
   console.log('Setting settings to default at setSettingsToDefault()');
   const defaultSettings: appSettings = {
+    inputMethod: 'keyboard',
     similarityRequirement: 0.8,
     hintSetting: 'oneLetter',
     //guessSetting: 'song',

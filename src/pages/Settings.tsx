@@ -9,6 +9,7 @@ import styles from '../css/app.module.scss';
 
 class Settings extends React.Component<{ t: TFunction }> {
     state = {
+        inputMethod: '',
         hintSetting: '',
         similarityRequirement: 0,
     };
@@ -16,6 +17,7 @@ class Settings extends React.Component<{ t: TFunction }> {
     constructor(props) {
         super(props);
         this.state = {
+            inputMethod: '',
             hintSetting: '',
             similarityRequirement: 0,
         };
@@ -24,8 +26,15 @@ class Settings extends React.Component<{ t: TFunction }> {
     componentDidMount() {
         const savedSettings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
         this.setState({
-            hintSetting: savedSettings.hintSetting || '',
-            similarityRequirement: savedSettings.similarityRequirement || 0,
+            inputMethod: savedSettings.inputMethod,
+            hintSetting: savedSettings.hintSetting,
+            similarityRequirement: savedSettings.similarityRequirement,
+        });
+    }
+
+    handleinputMethodChange = (event) => {
+        this.setState({ inputMethod: event.target.value }, () => {
+            this.saveSettingsToLocalStorage();
         });
     }
 
@@ -42,9 +51,10 @@ class Settings extends React.Component<{ t: TFunction }> {
     };
 
     saveSettingsToLocalStorage = () => {
-        const { hintSetting, similarityRequirement } = this.state;
+        const { inputMethod, hintSetting, similarityRequirement } = this.state;
         const savedSettings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
         const updatedSettings = {
+            inputMethod,
             hintSetting,
             similarityRequirement,
         };
@@ -55,7 +65,6 @@ class Settings extends React.Component<{ t: TFunction }> {
 
     render() {
         const { t } = this.props;
-        const { hintSetting, similarityRequirement } = this.state;
         return (
             <>
                 <div className={styles.container}>
@@ -65,8 +74,15 @@ class Settings extends React.Component<{ t: TFunction }> {
                         {t('gobacktogamebutton')}
                     </Button>
                     <div>
+                        <label htmlFor="inputMethod">{t('settings.inputMethod')}</label>
+                        <select id="inputMethod" value={this.state.inputMethod} onChange={this.handleinputMethodChange}>
+                            <option value="keyboard">{t('settings.inputKeyboard')}</option>
+                            <option value="buttons">{t('settings.inputButtons')}</option>
+                        </select>
+                    </div>
+                    <div>
                         <label htmlFor="hintSetting">{t('settings.hintSetting')}</label>
-                        <select id="hintSetting" value={hintSetting} onChange={this.handleHintSettingChange}>
+                        <select id="hintSetting" value={this.state.hintSetting} onChange={this.handleHintSettingChange}>
                             <option value="oneLetter">{t('settings.hintOneLetter')}</option>
                             <option value="oneWord">{t('settings.hintOneWord')}</option>
                             <option value="oneLetterOnEachWord">{t('settings.hintOneLetterOnEachWord')}</option>
@@ -80,10 +96,10 @@ class Settings extends React.Component<{ t: TFunction }> {
                             min={0.01}
                             max={1.0}
                             step={0.01}
-                            value={similarityRequirement}
+                            value={this.state.similarityRequirement}
                             onChange={this.handlesimilarityRequirementChange}
                         />
-                        <span>{t('settings.similarityPercentage', { percentage: (similarityRequirement * 100).toFixed(2)})}</span>
+                        <span>{t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(2)})}</span>
                     </div>
                     <Button onClick={setSettingsToDefault} classes={[styles.resetButton]}>
                         {t('settings.resetSettingsButton')}
