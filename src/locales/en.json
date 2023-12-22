@@ -34,7 +34,10 @@
       "similarityRequirement": "Similarity requirement",
       "hintSetting": "Hint setting",
       "similarityPercentage": "{{percentage}}%",
-      "resetSettingsButton": "Reset settings to defaults"
+      "resetSettingsButton": "Reset settings to defaults",
+      "inputMethod": "Input method",
+      "inputKeyboard": "Keyboard",
+      "inputButtons": "Buttons"
     }
   }
 }

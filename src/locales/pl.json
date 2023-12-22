@@ -34,7 +34,10 @@
       "similarityRequirement": "Wymagania podobieństwa",
       "hintSetting": "Ustawienia podpowiedzi",
       "similarityPercentage": "{{percentage}}%",
-      "resetSettingsButton": "Przywróć ustawienia domyślne"
+      "resetSettingsButton": "Przywróć ustawienia domyślne",
+      "inputMethod": "Metoda wprowadzania", 
+      "inputKeyboard": "Klawiatura",
+      "inputButtons": "Przyciski"
     }
   }
 }
