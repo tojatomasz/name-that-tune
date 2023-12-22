@@ -246,7 +246,9 @@ class Game extends React.Component<
                 </Button>
               ))}
             </div>)}
-
+          <Button onClick={this.skipGuess} disabled={!isPlaying}>
+            {t('skipBtn')}
+          </Button>
           {isPlaying ? (
             <Button
               onClick={this.playClick}
