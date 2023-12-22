@@ -9,7 +9,7 @@ export const getSettings = (): appSettings => {
   console.log('Getting settings at getSettings()');
   const settings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
   //if settings are not set, set them to default
-  if(!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod) {
+  if (!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod) {
     console.log('Settings not set, setting to default at getSettings()');
     return setSettingsToDefault();
   }
@@ -32,12 +32,12 @@ export const setSettingsToDefault = () => {
 
 export const goBackToGame = () => {
   Spicetify.Platform.History.push({
-      pathname: '/name-that-tune/game',
-      state: {
-        data: {
-        },
+    pathname: '/name-that-tune/game',
+    state: {
+      data: {
       },
-    });
+    },
+  });
 };
 
 export const resetStats = () => {
@@ -61,21 +61,21 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
     const title = tracks[index].contextTrack.metadata.title;
     return normalize(title, true);
   });
-  
+
   const currentTrackTitle = Spicetify.Player.data.item?.metadata?.title;
-  if(!Spicetify.Player.data.item) {return []}
+  if (!Spicetify.Player.data.item) {return [];}
   const nextTrackTitle = Spicetify.Queue.nextTracks[0].contextTrack.metadata.title;
-  if(!Spicetify.Queue.nextTracks[0].contextTrack) {return []}
+  if (!Spicetify.Queue.nextTracks[0].contextTrack) {return [];}
 
   console.log('Current title: '+currentTrackTitle);
-  if(Spicetify.Queue.prevTracks[0]) {
+  if (Spicetify.Queue.prevTracks[0]) {
     console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
   }
 
   //when we open the game, the currentTrackTitle is current track, but when we click next, the currentTrackTitle is the previous track
-  if(next){
+  if (next) {
     titles.push(normalize(nextTrackTitle, true));
-  }else{
+  } else {
     titles.push(normalize(currentTrackTitle, true));
   }
   console.log('Tracks: '+titles);
@@ -108,9 +108,9 @@ const normalize = (str: string | undefined, keepSpaces: boolean = false) => {
 
   // Remove everything that is not a number, letter, Cyrylic alphabet, Polish alphabet or space
   cleaned = cleaned.replace(/[^\wа-яА-ЯіїІЇ\dąćęłńóśźż\s]/g, '');
-  
+
   // Remove spaces
-  if(!keepSpaces) cleaned = cleaned.replace(/\s/g, '');
+  if (!keepSpaces) cleaned = cleaned.replace(/\s/g, '');
 
   // TODO: add any other logic?
 
@@ -127,39 +127,39 @@ export const showHint = (hint: number) => {
   const hintSetting = getSettings().hintSetting;
   console.log('Hint setting: '+{ hintSetting });
   let updatedHint = '';
+  let nonSpaceChars = 0;
+  const words = currentHint.split(' ');
 
   switch (hintSetting) {
-    case 'oneLetter':
-      let nonSpaceChars = 0;
-      updatedHint = currentHint
-        .split('')
-        .map((char) => {
-          if (char !== ' ') {
-            return nonSpaceChars++ < hint ? char : '*';
-          }
-          return ' ';
-        })
-        .join('');
-      break;
-    case 'oneWord':
-      const words = currentHint.split(' ');
-      updatedHint = words
-        .map((word, index) => (index < hint ? word : '*'.repeat(word.length)))
-        .join(' ');
-      break;
-    case 'oneLetterOnEachWord':
-      updatedHint = currentHint
-        .split(' ')
-        .map((word) =>
-          word
-            .split('')
-            .map((char, index) => (index < hint ? char : '*'))
-            .join('')
-        )
-        .join(' ');
-      break;
-    default:
-      break;
+  case 'oneLetter':
+    updatedHint = currentHint
+      .split('')
+      .map((char) => {
+        if (char !== ' ') {
+          return nonSpaceChars++ < hint ? char : '*';
+        }
+        return ' ';
+      })
+      .join('');
+    break;
+  case 'oneWord':
+    updatedHint = words
+      .map((word, index) => (index < hint ? word : '*'.repeat(word.length)))
+      .join(' ');
+    break;
+  case 'oneLetterOnEachWord':
+    updatedHint = currentHint
+      .split(' ')
+      .map((word) =>
+        word
+          .split('')
+          .map((char, index) => (index < hint ? char : '*'))
+          .join(''),
+      )
+      .join(' ');
+    break;
+  default:
+    break;
   }
 
   return updatedHint;
@@ -175,7 +175,7 @@ export const checkSimilarity = (guess: string) => {
   const similarity = diceCoefficient(normalizedGuess, normalizedTitle);
   console.log({ similarity });
   return similarity;
-}
+};
 
 export const checkGuess = (guess: string) => {
   console.log({

@@ -12,7 +12,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import Game from './pages/Game';
 import Stats from './pages/Stats';
-import Settings from './pages/Settings'; 
+import Settings from './pages/Settings';
 
 import './css/app.global.scss';
 
@@ -53,7 +53,7 @@ class App extends React.Component {
     }
     // Otherwise, render the main Game
     else {
-    return <Game t={t} />;
+      return <Game t={t} />;
     }
   }
 }

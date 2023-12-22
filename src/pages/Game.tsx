@@ -74,11 +74,11 @@ class Game extends React.Component<
 
   guessChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ guess: e.target.value });
-  
+
   updateSimilarity = () => {
-      const similarityScore = (checkSimilarity(this.state.guess) * 100).toFixed(0);
-      this.setState({ similarity: similarityScore.toString() + '%' });
-    };
+    const similarityScore = (checkSimilarity(this.state.guess) * 100).toFixed(0);
+    this.setState({ similarity: similarityScore.toString() + '%' });
+  };
 
   skipGuess = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -122,11 +122,11 @@ class Game extends React.Component<
         this.audioManager.setEnd(stageToTime(this.state.stage));
       }
     });
-    };
+  };
 
   giveHint = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      this.setState({hint: showHint(this.state.hintCount++) || ''})
+    e.preventDefault();
+    this.setState((prevState) => ({ hint: showHint(prevState.hintCount + 1) || '' }));
   };
 
   giveUp = () => {
@@ -147,7 +147,7 @@ class Game extends React.Component<
     Spicetify.Player.seek(0);
     Spicetify.Player.pause();
     this.audioManager.setEnd(1);
-    
+
     this.setState({
       guesses: [],
       // Reset the guess
@@ -202,7 +202,6 @@ class Game extends React.Component<
     const keyboardInput = this.state.settings.inputMethod === 'keyboard';
     const isPlaying = this.state.gameState === GameState.Playing;
     const { t } = this.props;
-    
 
     return (
       <>
@@ -212,41 +211,41 @@ class Game extends React.Component<
           <h2 className={styles.hint}>{(this.state.hint)}</h2>
           <h2 className={styles.similarity}>{(this.state.similarity)}</h2>
           {keyboardInput &&(
-          <form onSubmit={this.submitGuess}>
-            <input
-              type={'text'}
-              className={styles.input}
-              placeholder={t('guessPlaceholder') as string}
-              value={this.state.guess}
-              disabled={!isPlaying}
-              onChange={this.guessChange}
-            />
-            <div className={styles.formButtonContainer}>
-              <Button onClick={this.submitGuess} disabled={!isPlaying}>
-                {t('guessBtn')}
-              </Button>
-              <Button onClick={this.giveHint} disabled={!isPlaying}>
-                {t('hintBtn')}
-              </Button>
-              <Button onClick={this.skipGuess} disabled={!isPlaying}>
-                {t('skipBtn')}
-              </Button>
-            </div>
-          </form>
+            <form onSubmit={this.submitGuess}>
+              <input
+                type={'text'}
+                className={styles.input}
+                placeholder={t('guessPlaceholder') as string}
+                value={this.state.guess}
+                disabled={!isPlaying}
+                onChange={this.guessChange}
+              />
+              <div className={styles.formButtonContainer}>
+                <Button onClick={this.submitGuess} disabled={!isPlaying}>
+                  {t('guessBtn')}
+                </Button>
+                <Button onClick={this.giveHint} disabled={!isPlaying}>
+                  {t('hintBtn')}
+                </Button>
+                <Button onClick={this.skipGuess} disabled={!isPlaying}>
+                  {t('skipBtn')}
+                </Button>
+              </div>
+            </form>
           )}
           {!keyboardInput && (
-          <div className={styles.formButtonContainer}>
-          {this.state.randomTitles.map((title, index) => (
-              <Button
-                key={index}
-                classes={[styles.titleButton]}
-                onClick={this.handleRandomTitleButtonClick}
-                disabled={!isPlaying}
-              >
-                {title}
-              </Button>
-            ))}
-          </div>)}
+            <div className={styles.formButtonContainer}>
+              {this.state.randomTitles.map((title, index) => (
+                <Button
+                  key={index}
+                  classes={[styles.titleButton]}
+                  onClick={this.handleRandomTitleButtonClick}
+                  disabled={!isPlaying}
+                >
+                  {title}
+                </Button>
+              ))}
+            </div>)}
 
           {isPlaying ? (
             <Button

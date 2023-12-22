@@ -128,7 +128,7 @@ class Stats extends React.Component<{ t: TFunction }> {
           <h1 className={styles.title}>{t('title')}</h1>
           <h2>{t('stats.title')}</h2>
           <Button onClick={goBackToGame} classes={[styles.goBackToGameButton]}>
-                        {t('gobacktogamebutton')}
+            {t('gobacktogamebutton')}
           </Button>
           <p>{t('stats.winPercentage', { percentage: (winPercentage * 100).toFixed(2) })}</p>
           <table>
@@ -152,7 +152,7 @@ class Stats extends React.Component<{ t: TFunction }> {
           {/* TODO: add total games played and games won vs gave up */}
           <Bar options={chartOptions} data={chartData} />
           <Button onClick={resetStats} classes={[styles.resetButton]}>
-                        {t('stats.resetStatsButton')}
+            {t('stats.resetStatsButton')}
           </Button>
         </div>
       </>
