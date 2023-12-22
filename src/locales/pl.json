@@ -10,7 +10,7 @@
     "skipBtn": "Pomiń", 
     "giveUp": "Poddaj się",
     "nextSong": "Następna piosenka",
-    "menuEntry": "Graj $t(appName)",  
+    "menuEntry": "Zagraj w $t(appName)",  
     "sendingURIs_one": "Wysyłanie {{count}} URI do $t(appName)",
     "sendingURIs_other": "Wysyłanie {{count}} URIs do $t(appName)",
     "gobacktogamebutton": "Wróć do gry",
