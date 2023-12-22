@@ -1,7 +1,6 @@
 // import FuzzySet from 'fuzzyset';
 import { diceCoefficient } from 'dice-coefficient';
-
-import { fetchAndPlay, shuffle, playList } from './shuffle+';
+import { fetchAndPlay, shuffle, Queue } from './shuffle+';
 import { getLocalStorageDataFromKey } from './Utils';
 import { STATS_KEY, SETTINGS_KEY } from './constants';
 import { appSettings } from './types/settings';
@@ -28,6 +27,7 @@ export const setSettingsToDefault = () => {
   };
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
   window.location.reload();
+  return defaultSettings;
 };
 
 export const goBackToGame = () => {
@@ -84,26 +84,12 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
   return shuffledTitles;
 };
 
-export const toggleNowPlaying = (visible: boolean) => {
-  // visible = true;
-  // Hide items that give away information while playing
-  [
-    // The left side chunk with the title, artist, album art, etc.
-    document.querySelector<HTMLElement>('.main-nowPlayingBar-left'),
-    // Play/pause/next/previous/etc.
-    document.querySelector<HTMLElement>('.player-controls__buttons'),
-  ].forEach((item) => {
-    if (item) {
-      item.style.opacity = visible ? '1' : '0';
-      item.style.pointerEvents = visible ? 'auto' : 'none';
-    }
-  });
-
-  // Disable playback bar interaction while playing
-  const playbackBar = document.querySelector<HTMLElement>('.playback-bar');
-  if (playbackBar) {
-    playbackBar.style.pointerEvents = visible ? 'auto' : 'none';
-  }
+/**
+ * Set "is guessing" body class (controls element visibility/interactivity)
+ * @param guessing If we are enabling or disabling the "is guessing" class
+ */
+export const toggleIsGuessing = (guessing: boolean) => {
+  document.body.classList.toggle('name-that-tune--guessing', guessing);
 };
 
 // TODO: potentially tweak this
@@ -209,7 +195,7 @@ export const initialize = (URIs?: string[]) => {
       return;
     }
 
-    playList(shuffle(URIs), null);
+    Queue(shuffle(URIs), null);
 
     // Spicetify.Player.playUri(URIs[0]);
     // Because it will start playing automatically

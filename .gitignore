@@ -149,6 +149,10 @@ out
 # built files
 dist/
 
+# package managers
+package-lock.json
+yarn.lock
+
 # icon WIP files
 icons/
 package-lock.json

@@ -193,7 +193,7 @@ declare namespace Spicetify {
 		/**
 		 * @deprecated Use `item` instead. This will be removed in the future.
 		 */
-		//track: PlayerTrack;
+		track: PlayerTrack;
 	};
 	type PlayerContext = {
 		uri: string;

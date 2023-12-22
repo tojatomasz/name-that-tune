@@ -6,7 +6,7 @@ import { TFunction } from 'i18next';
 import GuessItem from '../components/GuessItem';
 import Button from '../components/Button';
 
-import { initialize, toggleNowPlaying, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles, getSettings } from '../logic';
+import { initialize, toggleIsGuessing, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles, getSettings } from '../logic';
 import AudioManager from '../AudioManager';
 
 enum GameState {
@@ -117,7 +117,7 @@ class Game extends React.Component<
         this.audioManager.setEnd(0);
         Spicetify.Player.seek(0);
         Spicetify.Player.play();
-        toggleNowPlaying(true);
+        toggleIsGuessing(false);
       } else {
         this.audioManager.setEnd(stageToTime(this.state.stage));
       }
@@ -133,7 +133,7 @@ class Game extends React.Component<
     this.audioManager.setEnd(0);
     Spicetify.Player.seek(0);
     Spicetify.Player.play();
-    toggleNowPlaying(true);
+    toggleIsGuessing(false);
     saveStats(-1);
 
     this.setState({
@@ -142,7 +142,7 @@ class Game extends React.Component<
   };
 
   nextSong = () => {
-    toggleNowPlaying(false);
+    toggleIsGuessing(true);
     Spicetify.Player.next();
     Spicetify.Player.seek(0);
     Spicetify.Player.pause();

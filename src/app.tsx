@@ -14,6 +14,8 @@ import Game from './pages/Game';
 import Stats from './pages/Stats';
 import Settings from './pages/Settings'; 
 
+import './css/app.global.scss';
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .use(LanguageDetector)
