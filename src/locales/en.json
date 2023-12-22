@@ -27,7 +27,7 @@
       "resetStatsButton": "Reset stats"
     },
     "settings": {
-      "title": "Settings",
+      "title": "Game settings",
       "hintOneLetter": "Show one letter at a time",
       "hintOneWord": "Show one word at a time",
       "hintOneLetterOnEachWord": "Show one letter on each word",
