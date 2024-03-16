@@ -208,8 +208,8 @@ class Game extends React.Component<
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
           {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
-          <h2 className={styles.hint}>{(this.state.hint)}</h2>
-          <h2 className={styles.similarity}>{(this.state.similarity)}</h2>
+          {keyboardInput ? <h2 className={styles.hint}>{(this.state.hint)}</h2> : null }
+          {keyboardInput ? <h2 className={styles.similarity}>{(this.state.similarity)}</h2> : null}
           {keyboardInput &&(
             <form onSubmit={this.submitGuess}>
               <input
