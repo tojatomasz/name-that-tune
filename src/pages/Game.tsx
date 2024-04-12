@@ -8,6 +8,7 @@ import Button from '../components/Button';
 
 import { initialize, toggleIsGuessing, checkGuess, saveStats, checkSimilarity, stageToTime, showHint, getRandomTrackTitles, getSettings } from '../logic';
 import AudioManager from '../AudioManager';
+import { appSettings } from '../types/settings';
 
 enum GameState {
   Playing,
@@ -29,7 +30,7 @@ class Game extends React.Component<
     guesses: (string | null)[];
     gameState: GameState;
     randomTitles: string[];
-    settings: string[];
+    settings: appSettings;
   }
 > {
   state = {
