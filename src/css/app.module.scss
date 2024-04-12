@@ -90,8 +90,8 @@
   padding: 12px !important;
 
   position: fixed !important;
-  bottom: 4px;
-  right: 4px;
+  top: 125px;
+  right: 50px;
 }
 
 .SettingsButton {
@@ -100,13 +100,13 @@
   padding: 12px !important;
 
   position: fixed !important;
-  bottom: 4px;
-  left: 4px;
+  top: 100px;
+  right: 50px;
 }
 
 .resetButton{
   position: fixed !important;
-  bottom: 25px;
+  bottom: 125px;
   right: 25px;
   color: var(--spice-text) !important;
   background-color: var(--spice-notification-error) !important;
