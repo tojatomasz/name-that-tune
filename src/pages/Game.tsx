@@ -63,6 +63,7 @@ class Game extends React.Component<
     console.log('App mounted, URIs: ', this.URIs);
     initialize(this.URIs);
     this.audioManager.listen();
+    this.keyboardShortcuts();
   }
 
   componentWillUnmount() {
@@ -71,6 +72,25 @@ class Game extends React.Component<
 
   playClick = () => {
     this.audioManager.play();
+  };
+
+  keyboardShortcuts = () => {
+    // Random titles
+    for (let i = 0; i < this.state.randomTitles.length; i++) {
+      Spicetify.Keyboard.registerShortcut((i + 1).toString(), (e) => {
+        this.setState({ guess: this.state.randomTitles[i] }, () => {
+          this.submitGuess(e);
+        });
+      });
+    }
+    // Skip
+    Spicetify.Keyboard.registerShortcut('q', this.skipGuess);
+    // Play
+    Spicetify.Keyboard.registerShortcut('w', this.playClick);
+    // Give up
+    Spicetify.Keyboard.registerShortcut('e', this.giveUp);
+    // Next song
+    Spicetify.Keyboard.registerShortcut('r', this.nextSong);
   };
 
   guessChange = (e: React.ChangeEvent<HTMLInputElement>) =>
