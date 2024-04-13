@@ -23,7 +23,7 @@ export default class AudioManager {
 
       // TODO: calculate and update song length etc on song change
       // Spicetify uses ms
-      const endMillis = this.end * 1000;
+      const endMillis = this.end;
       const songLengthMillis = Spicetify.Player.getDuration();
       if (endMillis > songLengthMillis) return;
 

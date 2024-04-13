@@ -115,7 +115,7 @@ class Game extends React.Component<
       // Increment the stage
       stage: this.state.stage + 1,
     }, () => {
-      this.audioManager.setEnd(stageToTime(this.state.stage));
+      this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
     });
   };
 
@@ -143,7 +143,7 @@ class Game extends React.Component<
         Spicetify.Player.play();
         toggleIsGuessing(false);
       } else {
-        this.audioManager.setEnd(stageToTime(this.state.stage));
+        this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
       }
     });
   };
@@ -170,7 +170,7 @@ class Game extends React.Component<
     Spicetify.Player.next();
     Spicetify.Player.seek(0);
     Spicetify.Player.pause();
-    this.audioManager.setEnd(1);
+    this.audioManager.setEnd(250);
 
     this.setState({
       guesses: [],
@@ -185,7 +185,7 @@ class Game extends React.Component<
       gameState: GameState.Playing,
       randomTitles: getRandomTrackTitles(true),
     }, () => {
-      this.audioManager.setEnd(stageToTime(this.state.stage));
+      this.audioManager.setEnd(250);//stageToTime(this.state.stage)*1000);
     });
   };
 
