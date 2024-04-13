@@ -37,7 +37,9 @@
       "resetSettingsButton": "Reset settings to defaults",
       "inputMethod": "Input method",
       "inputKeyboard": "Keyboard",
-      "inputButtons": "Buttons"
+      "inputButtons": "Buttons",
+      "stageScaling": "Stage scaling",
+      "stageScalingNumber": "Shorter by {{multiplier}} times"
     }
   }
 }

@@ -9,7 +9,7 @@ export const getSettings = (): appSettings => {
   console.log('Getting settings at getSettings()');
   const settings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
   //if settings are not set, set them to default
-  if (!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod) {
+  if (!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod || !settings.stageScaling) {
     console.log('Settings not set, setting to default at getSettings()');
     return setSettingsToDefault();
   }
@@ -23,6 +23,7 @@ export const setSettingsToDefault = () => {
     inputMethod: 'keyboard',
     similarityRequirement: 0.8,
     hintSetting: 'oneLetter',
+    stageScaling: 1,
     //guessSetting: 'song',
   };
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
@@ -218,7 +219,7 @@ export const initialize = (URIs?: string[]) => {
   * s = 1 + 0.5x + 0.5x^2
   */
 export const stageToTime = (stage: number) => {
-  return ((1 + 0.5 * (stage + stage ** 2))/4); // devide by 4 to make it more difficult
+  return ((1 + 0.5 * (stage + stage ** 2))/getSettings().stageScaling); // devide by 4 to make it more difficult
 };
 
 /**

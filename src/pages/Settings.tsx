@@ -12,6 +12,7 @@ class Settings extends React.Component<{ t: TFunction }> {
     inputMethod: '',
     hintSetting: '',
     similarityRequirement: 0,
+    stageScaling: 1,
   };
 
   constructor(props) {
@@ -20,6 +21,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       inputMethod: '',
       hintSetting: '',
       similarityRequirement: 0,
+      stageScaling: 1,
     };
   }
 
@@ -29,6 +31,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       inputMethod: savedSettings.inputMethod,
       hintSetting: savedSettings.hintSetting,
       similarityRequirement: savedSettings.similarityRequirement,
+      stageScaling: savedSettings.stageScaling,
     });
   }
 
@@ -50,12 +53,19 @@ class Settings extends React.Component<{ t: TFunction }> {
     });
   };
 
+  handleStageScalingChange = (event) => {
+    this.setState({ stageScaling: event.target.value }, () => {
+      this.saveSettingsToLocalStorage();
+    });
+  };
+
   saveSettingsToLocalStorage = () => {
-    const { inputMethod, hintSetting, similarityRequirement } = this.state;
+    const { inputMethod, hintSetting, similarityRequirement, stageScaling } = this.state;
     const updatedSettings = {
       inputMethod,
       hintSetting,
       similarityRequirement,
+      stageScaling,
     };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
   };
@@ -99,6 +109,20 @@ class Settings extends React.Component<{ t: TFunction }> {
                 className={styles.settingsInput}
               />
               <span className={styles.similarityDisplay}>{t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(0) })}</span>
+            </div>
+            <div className={styles.settingsRow}>
+              <label className={styles.settingsLabel}>{t('settings.stageScaling')}</label>
+              <input
+                type="range"
+                id="stageScaling"
+                min={1}
+                max={5}
+                step={1}
+                value={this.state.stageScaling}
+                onChange={this.handleStageScalingChange}
+                className={styles.settingsInput}
+              />
+              <span className={styles.stageScalingDisplay}>{t('settings.stageScalingNumber', { multiplier: (this.state.stageScaling) })}</span>
             </div>
           </div>
           <Button onClick={setSettingsToDefault} classes={[styles.resetButton]}>

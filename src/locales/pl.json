@@ -41,7 +41,9 @@
       "resetSettingsButton": "Przywróć ustawienia domyślne",
       "inputMethod": "Metoda wprowadzania", 
       "inputKeyboard": "Klawiatura",
-      "inputButtons": "Przyciski"
+      "inputButtons": "Przyciski",
+      "stageScaling": "Skalowanie etapów",
+      "stageScalingNumber": "Krótsze o {{multiplier}} razy"
     }
   }
 }
