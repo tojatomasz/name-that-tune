@@ -219,7 +219,7 @@ export const initialize = (URIs?: string[]) => {
   * s = 1 + 0.5x + 0.5x^2
   */
 export const stageToTime = (stage: number) => {
-  return ((1 + 0.5 * (stage + stage ** 2))/getSettings().stageScaling); // devide by 4 to make it more difficult
+  return ((1 + 0.5 * (stage + stage ** 2))/getSettings().stageScaling).toFixed(2); // devide by 4 to make it more difficult
 };
 
 /**
