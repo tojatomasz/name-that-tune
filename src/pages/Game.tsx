@@ -68,6 +68,7 @@ class Game extends React.Component<
 
   componentWillUnmount() {
     this.audioManager.unlisten();
+    //add cleanup for keyboard shortcuts
   }
 
   playClick = () => {
@@ -86,7 +87,15 @@ class Game extends React.Component<
     // Skip
     Spicetify.Keyboard.registerShortcut('q', this.skipGuess);
     // Play
-    Spicetify.Keyboard.registerShortcut('w', this.playClick);
+    Spicetify.Keyboard.registerShortcut(('w'), (e) =>{
+      if (this.state.gameState === GameState.Won || this.state.gameState === GameState.Lost)
+      {
+        this.nextSong(e)
+      } else
+      {
+        this.playClick(e)
+      }
+    });
     // Give up
     Spicetify.Keyboard.registerShortcut('e', this.giveUp);
     // Next song
