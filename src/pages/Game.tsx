@@ -185,7 +185,7 @@ class Game extends React.Component<
       gameState: GameState.Playing,
       randomTitles: getRandomTrackTitles(true),
     }, () => {
-      this.audioManager.setEnd(250);//stageToTime(this.state.stage)*1000);
+      this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
     });
   };
 

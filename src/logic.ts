@@ -218,7 +218,7 @@ export const initialize = (URIs?: string[]) => {
   * s = 1 + 0.5x + 0.5x^2
   */
 export const stageToTime = (stage: number) => {
-  return (1 + 0.5 * (stage + stage ** 2));
+  return ((1 + 0.5 * (stage + stage ** 2))/4); // devide by 4 to make it more difficult
 };
 
 /**
