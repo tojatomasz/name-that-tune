@@ -76,7 +76,6 @@ class Game extends React.Component<
   };
 
   keyboardShortcuts = () => {
-    // Random titles
     for (let i = 0; i < this.state.randomTitles.length; i++) {
       Spicetify.Keyboard.registerShortcut((i + 1).toString(), (e) => {
         this.setState({ guess: this.state.randomTitles[i] }, () => {
@@ -84,9 +83,7 @@ class Game extends React.Component<
         });
       });
     }
-    // Skip
     Spicetify.Keyboard.registerShortcut('q', this.skipGuess);
-    // Play
     Spicetify.Keyboard.registerShortcut(('w'), (e) =>{
       if (this.state.gameState === GameState.Won || this.state.gameState === GameState.Lost)
       {
@@ -96,10 +93,7 @@ class Game extends React.Component<
         this.playClick(e)
       }
     });
-    // Give up
     Spicetify.Keyboard.registerShortcut('e', this.giveUp);
-    // Next song
-    Spicetify.Keyboard.registerShortcut('r', this.nextSong);
   };
 
   guessChange = (e: React.ChangeEvent<HTMLInputElement>) =>
