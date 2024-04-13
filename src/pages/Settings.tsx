@@ -71,6 +71,7 @@ class Settings extends React.Component<{ t: TFunction }> {
   };
 
   render() {
+    const  keyboardInput = this.state.inputMethod === 'keyboard';
     const { t } = this.props;
     return (
       <>
@@ -88,28 +89,28 @@ class Settings extends React.Component<{ t: TFunction }> {
                 <option className={styles.settingsOption} value="buttons">{t('settings.inputButtons')}</option>
               </select>
             </div>
-            <div className={styles.settingsRow}>
-              <label className={styles.settingsLabel}>{t('settings.hintSetting')}</label>
-              <select className={styles.settingsSelect} value={this.state.hintSetting} onChange={this.handleHintSettingChange}>
-                <option className={styles.settingsOption} value="oneLetter">{t('settings.hintOneLetter')}</option>
-                <option className={styles.settingsOption} value="oneWord">{t('settings.hintOneWord')}</option>
-                <option className={styles.settingsOption} value="oneLetterOnEachWord">{t('settings.hintOneLetterOnEachWord')}</option>
-              </select>
-            </div>
-            <div className={styles.settingsRow}>
-              <label className={styles.settingsLabel}>{t('settings.similarityRequirement')}</label>
-              <input
-                type="range"
-                id="similarityRequirement"
-                min={0}
-                max={1.0}
-                step={0.01}
-                value={this.state.similarityRequirement}
-                onChange={this.handlesimilarityRequirementChange}
-                className={styles.settingsInput}
-              />
-              <span className={styles.similarityDisplay}>{t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(0) })}</span>
-            </div>
+            {keyboardInput && (
+              <><div className={styles.settingsRow}>
+                <label className={styles.settingsLabel}>{t('settings.hintSetting')}</label>
+                <select className={styles.settingsSelect} value={this.state.hintSetting} onChange={this.handleHintSettingChange}>
+                  <option className={styles.settingsOption} value="oneLetter">{t('settings.hintOneLetter')}</option>
+                  <option className={styles.settingsOption} value="oneWord">{t('settings.hintOneWord')}</option>
+                  <option className={styles.settingsOption} value="oneLetterOnEachWord">{t('settings.hintOneLetterOnEachWord')}</option>
+                </select>
+              </div><div className={styles.settingsRow}>
+                <label className={styles.settingsLabel}>{t('settings.similarityRequirement')}</label>
+                <input
+                  type="range"
+                  id="similarityRequirement"
+                  min={0}
+                  max={1.0}
+                  step={0.01}
+                  value={this.state.similarityRequirement}
+                  onChange={this.handlesimilarityRequirementChange}
+                  className={styles.settingsInput} />
+                <span className={styles.similarityDisplay}>{t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(0) })}</span>
+              </div></>
+            )}
             <div className={styles.settingsRow}>
               <label className={styles.settingsLabel}>{t('settings.stageScaling')}</label>
               <input
