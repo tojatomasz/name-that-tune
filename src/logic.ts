@@ -185,6 +185,10 @@ export const checkGuess = (guess: string) => {
   });
   const similarityRequirement = getSettings().similarityRequirement;
   console.log('Similarity requirement: ' + similarityRequirement);
+  if (getSettings().inputMethod == 'buttons')
+  {
+    return checkSimilarity(guess) == 1; //if we use buttons, we don't need to check similarity, because we can't make a mistake:D
+  }
   return checkSimilarity(guess) >= similarityRequirement;
 };
 
