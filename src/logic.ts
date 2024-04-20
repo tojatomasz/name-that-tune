@@ -53,25 +53,38 @@ export const resetStats = () => {
 
 export const getRandomTrackTitles = (next: boolean): string[] => {
   const tracks = Spicetify.Queue.nextTracks;
+
+  const titles = new Set<string>();
+  console.log('Tracks: ', tracks);
   if (tracks.length < 4) {
     console.error('Not enough tracks in the queue');
     return [];
   }
 
-  const indices = new Set<number>();
-  while (indices.size < 4) {
-    indices.add(Math.floor(Math.random() * tracks.length));
-  }
-
-  const titles = Array.from(indices).map(index => {
-    const title = tracks[index].contextTrack.metadata.title;
-    return normalize(title, true);
-  });
-
   const currentTrackTitle = Spicetify.Player.data.item?.metadata?.title;
   if (!Spicetify.Player.data.item) {return [];}
   const nextTrackTitle = Spicetify.Queue.nextTracks[0].contextTrack.metadata.title;
   if (!Spicetify.Queue.nextTracks[0].contextTrack) {return [];}
+
+  // Add the current track title first
+  if (next) {
+    titles.add(normalize(nextTrackTitle, true));
+  } else {
+    titles.add(normalize(currentTrackTitle, true));
+  }
+
+  // Add four more UNIQUE track titles
+  let i = 0;
+  while (titles.size < 5) {
+    const index = Math.floor(Math.random() * tracks.length);
+    const title = normalize(tracks[index].contextTrack.metadata.title, true);
+    if (title !== '') { titles.add(title);} //avoid empty titles
+    i++;
+    if (i > 10) {
+      console.error('Could not find enough unique track titles');
+      break;
+    }
+  }
 
   console.log('Current title: '+currentTrackTitle);
   if (Spicetify.Queue.prevTracks[0]) {
@@ -79,13 +92,8 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
   }
 
   //when we open the game, the currentTrackTitle is current track, but when we click next, the currentTrackTitle is the previous track
-  if (next) {
-    titles.push(normalize(nextTrackTitle, true));
-  } else {
-    titles.push(normalize(currentTrackTitle, true));
-  }
-  console.log('Tracks: '+titles);
-  const shuffledTitles = titles.sort(() => 0.5 - Math.random());
+  console.log('Titles: ', titles);
+  const shuffledTitles = [...titles].sort(() => 0.5 - Math.random());
   console.log('Shuffled tracks: '+shuffledTitles);
   return shuffledTitles;
 };
