@@ -6,28 +6,33 @@ import { STATS_KEY, SETTINGS_KEY } from './constants';
 import { appSettings } from './types/settings';
 
 export const getSettings = (): appSettings => {
-  console.log('Getting settings at getSettings()');
   const settings = getLocalStorageDataFromKey(SETTINGS_KEY, {}) as appSettings;
+
   //if settings are not set, set them to default
-  if (!settings.similarityRequirement || !settings.hintSetting || !settings.inputMethod || !settings.stageScaling) {
-    console.log('Settings not set, setting to default at getSettings()');
+  if (Object.values(settings).some(setting => setting === null)) {
     return setSettingsToDefault();
   }
-  console.log(settings);
+  console.log('Current settings:', settings);
   return settings;
 };
 
+export const defaultAppSettings: appSettings = {
+  inputMethod: 'keyboard',
+  similarityRequirement: 1,
+  hintSetting: 'oneLetter',
+  stageScaling: 1,
+};
+
 export const setSettingsToDefault = () => {
-  console.log('Setting settings to default at setSettingsToDefault()');
-  const defaultSettings: appSettings = {
-    inputMethod: 'keyboard',
-    similarityRequirement: 0.8,
-    hintSetting: 'oneLetter',
-    stageScaling: 1,
-    //guessSetting: 'song',
-  };
+  console.log('Setting settings to default');
+  const defaultSettings: appSettings = defaultAppSettings;
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
-  window.location.reload();
+
+  //hacky way below to reflesh the page, will rewrite it later
+  Spicetify.Platform.History.replace('/name-that-tune/game'); //another page to refresh the page
+  setTimeout(() => {
+    Spicetify.Platform.History.push('/name-that-tune/settings'); //because using windows.location.reload clears out the console
+  }, 1); // add a small delay or the second change wont occur
   return defaultSettings;
 };
 
@@ -126,7 +131,7 @@ export const showHint = (hint: number) => {
   const currentHint = normalize(title, true);
 
   const hintSetting = getSettings().hintSetting;
-  console.log('Hint setting: '+{ hintSetting });
+  console.log('Hint setting: '+hintSetting);
   let updatedHint = '';
   let nonSpaceChars = 0;
   const words = currentHint.split(' ');
