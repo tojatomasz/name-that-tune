@@ -150,7 +150,10 @@ class Game extends React.Component<
 
   giveHint = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    this.setState((prevState) => ({ hint: showHint(prevState.hintCount + 1) || '' }));
+    this.setState((prevState) => ({
+      hint: showHint(prevState.hintCount + 1) || '',
+      hintCount: prevState.hintCount + 1,
+    }));
   };
 
   giveUp = () => {

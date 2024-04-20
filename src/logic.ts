@@ -131,7 +131,7 @@ export const showHint = (hint: number) => {
   const currentHint = normalize(title, true);
 
   const hintSetting = getSettings().hintSetting;
-  console.log('Hint setting: '+hintSetting);
+  console.log('Hint number: '+hint+' Hint setting: '+hintSetting);
   let updatedHint = '';
   let nonSpaceChars = 0;
   const words = currentHint.split(' ');
