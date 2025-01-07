@@ -13,6 +13,7 @@ class Settings extends React.Component<{ t: TFunction }> {
     hintSetting: '',
     similarityRequirement: 0,
     guessTarget: 'song',
+    autoNextSongDelay: 0,
   };
 
   constructor(props) {
@@ -22,6 +23,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       hintSetting: '',
       similarityRequirement: 0,
       guessTarget: 'song',
+      autoNextSongDelay: 0,
     };
   }
 
@@ -32,6 +34,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       hintSetting: savedSettings.hintSetting,
       similarityRequirement: savedSettings.similarityRequirement,
       guessTarget: savedSettings.guessTarget,
+      autoNextSongDelay: savedSettings.autoNextSongDelay,
     });
   }
 
@@ -59,13 +62,20 @@ class Settings extends React.Component<{ t: TFunction }> {
     });
   };
 
+  handleAutoNextSongDelayChange = (event) => {
+    this.setState({ autoNextSongDelay: event.target.value }, () => {
+      this.saveSettingsToLocalStorage();
+    });
+  };
+
   saveSettingsToLocalStorage = () => {
-    const { inputMethod, hintSetting, similarityRequirement, guessTarget } = this.state;
+    const { inputMethod, hintSetting, similarityRequirement, guessTarget, autoNextSongDelay } = this.state;
     const updatedSettings = {
       inputMethod,
       hintSetting,
       similarityRequirement,
       guessTarget,
+      autoNextSongDelay,
     };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
   };
@@ -81,6 +91,24 @@ class Settings extends React.Component<{ t: TFunction }> {
             {t('gobacktogamebutton')}
           </Button>
           <div className={styles.settingsContainer}>
+            <div className={styles.settingsRow}>
+              <label className={styles.settingsLabel}>
+                {t('settings.similarityRequirement')}
+                <span className={styles.similarityDisplay}>
+                  {t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(0) })}
+                </span>
+              </label>
+              <input
+                type="range"
+                id="similarityRequirement"
+                min={0}
+                max={1.0}
+                step={0.01}
+                value={this.state.similarityRequirement}
+                onChange={this.handlesimilarityRequirementChange}
+                className={styles.settingsInput}
+              />
+            </div>
             <div className={styles.settingsRow}>
               <label className={styles.settingsLabel}>{t('settings.inputMethod')}</label>
               <select className={styles.settingsSelect} value={this.state.inputMethod} onChange={this.handleinputMethodChange}>
@@ -104,18 +132,13 @@ class Settings extends React.Component<{ t: TFunction }> {
               </select>
             </div>
             <div className={styles.settingsRow}>
-              <label className={styles.settingsLabel}>{t('settings.similarityRequirement')}</label>
-              <input
-                type="range"
-                id="similarityRequirement"
-                min={0}
-                max={1.0}
-                step={0.01}
-                value={this.state.similarityRequirement}
-                onChange={this.handlesimilarityRequirementChange}
-                className={styles.settingsInput}
-              />
-              <span className={styles.similarityDisplay}>{t('settings.similarityPercentage', { percentage: (this.state.similarityRequirement * 100).toFixed(0) })}</span>
+              <label className={styles.settingsLabel}>{t('settings.autoNextSongDelay')}</label>
+              <select className={styles.settingsSelect} value={this.state.autoNextSongDelay} onChange={this.handleAutoNextSongDelayChange}>
+                <option className={styles.settingsOption} value={0}>{t('settings.disabled')}</option>
+                {[...Array(10).keys()].map(i => (
+                  <option key={i + 1} className={styles.settingsOption} value={i + 1}>{i + 1} {t('settings.seconds')}</option>
+                ))}
+              </select>
             </div>
           </div>
           <Button onClick={setSettingsToDefault} classes={[styles.resetButton]}>

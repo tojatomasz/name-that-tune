@@ -31,6 +31,7 @@ class Game extends React.Component<
     randomTitles: string[];
     randomArtists: string[];
     settings: string[];
+    countdown: number;
   }
 > {
   state = {
@@ -50,6 +51,7 @@ class Game extends React.Component<
     randomTitles: getRandomTrackTitles(false).titles,
     randomArtists: getRandomTrackTitles(false).artists,
     settings: getSettings(),
+    countdown: 0,
   };
 
   URIs?: string[];
@@ -120,6 +122,17 @@ class Game extends React.Component<
         Spicetify.Player.seek(0);
         Spicetify.Player.play();
         toggleIsGuessing(false);
+        if (this.state.settings.autoNextSongDelay > 0) {
+          this.setState({ countdown: this.state.settings.autoNextSongDelay });
+          const countdownInterval = setInterval(() => {
+            this.setState((prevState) => ({ countdown: prevState.countdown - 1 }), () => {
+              if (this.state.countdown <= 0) {
+                clearInterval(countdownInterval);
+                this.nextSong();
+              }
+            });
+          }, 1000);
+        }
       } else {
         this.audioManager.setEnd(stageToTime(this.state.stage));
       }
@@ -211,7 +224,16 @@ class Game extends React.Component<
       <>
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
-          {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
+          {gameWon ? (
+            <>
+              <h2 className={styles.subtitle}>{t('winMsg')}</h2>
+              {this.state.settings.autoNextSongDelay > 0 && (
+                <h3 className={styles.countdown}>
+                  {t('switchingToNextSong', { seconds: this.state.countdown })}
+                </h3>
+              )}
+            </>
+          ) : null}
           {keyboardInput ? <h2 className={styles.hint}>{(this.state.hint)}</h2> : null }
           {keyboardInput ? <h2 className={styles.similarity}>{(this.state.similarity)}</h2> : null}
           {keyboardInput &&(

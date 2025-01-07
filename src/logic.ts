@@ -24,6 +24,7 @@ export const setSettingsToDefault = () => {
     similarityRequirement: 0.8,
     hintSetting: 'oneLetter',
     //guessSetting: 'song',
+    autoNextSongDelay: 0,
   };
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
   window.location.reload();
