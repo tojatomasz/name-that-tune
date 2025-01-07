@@ -37,7 +37,10 @@
       "resetSettingsButton": "Reset settings to defaults",
       "inputMethod": "Input method",
       "inputKeyboard": "Keyboard",
-      "inputButtons": "Buttons"
+      "inputButtons": "Buttons",
+      "guessTarget": "Guess target",
+      "guessSong": "Song",
+      "guessArtist": "Artist"
     }
   }
 }

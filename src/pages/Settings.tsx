@@ -12,6 +12,7 @@ class Settings extends React.Component<{ t: TFunction }> {
     inputMethod: '',
     hintSetting: '',
     similarityRequirement: 0,
+    guessTarget: 'song',
   };
 
   constructor(props) {
@@ -20,6 +21,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       inputMethod: '',
       hintSetting: '',
       similarityRequirement: 0,
+      guessTarget: 'song',
     };
   }
 
@@ -29,6 +31,7 @@ class Settings extends React.Component<{ t: TFunction }> {
       inputMethod: savedSettings.inputMethod,
       hintSetting: savedSettings.hintSetting,
       similarityRequirement: savedSettings.similarityRequirement,
+      guessTarget: savedSettings.guessTarget,
     });
   }
 
@@ -50,12 +53,19 @@ class Settings extends React.Component<{ t: TFunction }> {
     });
   };
 
+  handleGuessTargetChange = (event) => {
+    this.setState({ guessTarget: event.target.value }, () => {
+      this.saveSettingsToLocalStorage();
+    });
+  };
+
   saveSettingsToLocalStorage = () => {
-    const { inputMethod, hintSetting, similarityRequirement } = this.state;
+    const { inputMethod, hintSetting, similarityRequirement, guessTarget } = this.state;
     const updatedSettings = {
       inputMethod,
       hintSetting,
       similarityRequirement,
+      guessTarget,
     };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
   };
@@ -84,6 +94,13 @@ class Settings extends React.Component<{ t: TFunction }> {
                 <option className={styles.settingsOption} value="oneLetter">{t('settings.hintOneLetter')}</option>
                 <option className={styles.settingsOption} value="oneWord">{t('settings.hintOneWord')}</option>
                 <option className={styles.settingsOption} value="oneLetterOnEachWord">{t('settings.hintOneLetterOnEachWord')}</option>
+              </select>
+            </div>
+            <div className={styles.settingsRow}>
+              <label className={styles.settingsLabel}>{t('settings.guessTarget')}</label>
+              <select className={styles.settingsSelect} value={this.state.guessTarget} onChange={this.handleGuessTargetChange}>
+                <option className={styles.settingsOption} value="song">{t('settings.guessSong')}</option>
+                <option className={styles.settingsOption} value="artist">{t('settings.guessArtist')}</option>
               </select>
             </div>
             <div className={styles.settingsRow}>

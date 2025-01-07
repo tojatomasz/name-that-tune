@@ -45,11 +45,11 @@ export const resetStats = () => {
   window.location.reload();
 };
 
-export const getRandomTrackTitles = (next: boolean): string[] => {
+export const getRandomTrackTitles = (next: boolean): { titles: string[], artists: string[] } => {
   const tracks = Spicetify.Queue.nextTracks;
   if (tracks.length < 4) {
     console.error('Not enough tracks in the queue');
-    return [];
+    return { titles: [], artists: [] };
   }
 
   const indices = new Set<number>();
@@ -62,26 +62,45 @@ export const getRandomTrackTitles = (next: boolean): string[] => {
     return normalize(title, true);
   });
 
+  const artists = Array.from(indices).map(index => {
+    const artist = tracks[index].contextTrack.metadata.artist_name;
+    return normalize(artist, true);
+  });
+
   const currentTrackTitle = Spicetify.Player.data.item?.metadata?.title;
-  if (!Spicetify.Player.data.item) {return [];}
+  const currentTrackArtist = Spicetify.Player.data.item?.metadata?.artist_name;
+  if (!Spicetify.Player.data.item) {return { titles: [], artists: [] };}
   const nextTrackTitle = Spicetify.Queue.nextTracks[0].contextTrack.metadata.title;
-  if (!Spicetify.Queue.nextTracks[0].contextTrack) {return [];}
+  const nextTrackArtist = Spicetify.Queue.nextTracks[0].contextTrack.metadata.artist_name;
+  if (!Spicetify.Queue.nextTracks[0].contextTrack) {return { titles: [], artists: [] };}
 
   console.log('Current title: '+currentTrackTitle);
+  console.log('Current artist: '+currentTrackArtist);
   if (Spicetify.Queue.prevTracks[0]) {
     console.log('Previous title: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.title);
+    console.log('Previous artist: '+Spicetify.Queue.prevTracks[0].contextTrack.metadata.artist_name);
   }
 
   //when we open the game, the currentTrackTitle is current track, but when we click next, the currentTrackTitle is the previous track
   if (next) {
     titles.push(normalize(nextTrackTitle, true));
+    artists.push(normalize(nextTrackArtist, true));
   } else {
     titles.push(normalize(currentTrackTitle, true));
+    artists.push(normalize(currentTrackArtist, true));
   }
-  console.log('Tracks: '+titles);
-  const shuffledTitles = titles.sort(() => 0.5 - Math.random());
+
+  // Ensure the correct title/artist is only included once
+  const uniqueTitles = Array.from(new Set(titles));
+  const uniqueArtists = Array.from(new Set(artists));
+
+  console.log('Tracks: '+uniqueTitles);
+  console.log('Artists: '+uniqueArtists);
+  const shuffledTitles = uniqueTitles.sort(() => 0.5 - Math.random());
+  const shuffledArtists = uniqueArtists.sort(() => 0.5 - Math.random());
   console.log('Shuffled tracks: '+shuffledTitles);
-  return shuffledTitles;
+  console.log('Shuffled artists: '+shuffledArtists);
+  return { titles: shuffledTitles, artists: shuffledArtists };
 };
 
 /**
@@ -165,10 +184,9 @@ export const showHint = (hint: number) => {
   return updatedHint;
 };
 
-export const checkSimilarity = (guess: string) => {
-  const normalizedTitle = normalize(
-    Spicetify.Player.data.item?.metadata?.title,
-  );
+export const checkSimilarity = (guess: string, target: 'song' | 'artist') => {
+  const metadata = Spicetify.Player.data.item?.metadata;
+  const normalizedTitle = normalize(target === 'song' ? metadata?.title : metadata?.artist_name);
   const normalizedGuess = normalize(guess);
   console.log({ normalizedTitle, normalizedGuess });
 
@@ -177,14 +195,14 @@ export const checkSimilarity = (guess: string) => {
   return similarity;
 };
 
-export const checkGuess = (guess: string) => {
+export const checkGuess = (guess: string, target: 'song' | 'artist') => {
   console.log({
     title: Spicetify.Player.data.item?.metadata?.title,
     guess,
   });
   const similarityRequirement = getSettings().similarityRequirement;
   console.log('Similarity requirement: ' + similarityRequirement);
-  return checkSimilarity(guess) >= similarityRequirement;
+  return checkSimilarity(guess, target) >= similarityRequirement;
 };
 
 export const initialize = (URIs?: string[]) => {
