@@ -30,7 +30,9 @@ class Game extends React.Component<
     guesses: (string | null)[];
     gameState: GameState;
     randomTitles: string[];
+    randomArtists: string[];
     settings: appSettings;
+    countdown: number;
   }
 > {
   state = {
@@ -47,8 +49,10 @@ class Game extends React.Component<
     // Past guesses
     guesses: [],
     gameState: GameState.Playing,
-    randomTitles: getRandomTrackTitles(false),
+    randomTitles: getRandomTrackTitles(false).titles,
+    randomArtists: getRandomTrackTitles(false).artists,
     settings: getSettings(),
+    countdown: 0,
   };
 
   URIs?: string[];
@@ -100,7 +104,7 @@ class Game extends React.Component<
     this.setState({ guess: e.target.value });
 
   updateSimilarity = () => {
-    const similarityScore = (checkSimilarity(this.state.guess) * 100).toFixed(0);
+    const similarityScore = (checkSimilarity(this.state.guess, this.state.settings.guessTarget) * 100).toFixed(0);
     this.setState({ similarity: similarityScore.toString() + '%' });
   };
 
@@ -125,7 +129,7 @@ class Game extends React.Component<
     // Don't allow empty guesses
     if (this.state.guess.trim().length === 0) return;
     this.updateSimilarity();
-    const won = checkGuess(this.state.guess);
+    const won = checkGuess(this.state.guess, this.state.settings.guessTarget);
     if (won) saveStats(this.state.stage);
 
     // Add the guess to the guess list in the state
@@ -142,6 +146,17 @@ class Game extends React.Component<
         Spicetify.Player.seek(0);
         Spicetify.Player.play();
         toggleIsGuessing(false);
+        if (this.state.settings.autoNextSongDelay > 0) {
+          this.setState({ countdown: this.state.settings.autoNextSongDelay });
+          const countdownInterval = setInterval(() => {
+            this.setState((prevState) => ({ countdown: prevState.countdown - 1 }), () => {
+              if (this.state.countdown <= 0) {
+                clearInterval(countdownInterval);
+                this.nextSong();
+              }
+            });
+          }, 1000);
+        }
       } else {
         this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
       }
@@ -186,7 +201,8 @@ class Game extends React.Component<
       hintCount: 0,
       similarity: '',
       gameState: GameState.Playing,
-      randomTitles: getRandomTrackTitles(true),
+      randomTitles: getRandomTrackTitles(true).titles,
+      randomArtists: getRandomTrackTitles(true).artists,
     }, () => {
       this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
     });
@@ -229,12 +245,22 @@ class Game extends React.Component<
     const keyboardInput = this.state.settings.inputMethod === 'keyboard';
     const isPlaying = this.state.gameState === GameState.Playing;
     const { t } = this.props;
+    const guessTarget = this.state.settings.guessTarget;
 
     return (
       <>
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
-          {gameWon ? <h2 className={styles.subtitle}>{t('winMsg')}</h2> : null}
+          {gameWon ? (
+            <>
+              <h2 className={styles.subtitle}>{t('winMsg')}</h2>
+              {this.state.settings.autoNextSongDelay > 0 && (
+                <h3 className={styles.countdown}>
+                  {t('switchingToNextSong', { seconds: this.state.countdown })}
+                </h3>
+              )}
+            </>
+          ) : null}
           {keyboardInput ? <h2 className={styles.hint}>{(this.state.hint)}</h2> : null }
           {keyboardInput ? <h2 className={styles.similarity}>{(this.state.similarity)}</h2> : null}
           {keyboardInput &&(
@@ -262,7 +288,7 @@ class Game extends React.Component<
           )}
           {!keyboardInput && (
             <div className={styles.formButtonContainer}>
-              {this.state.randomTitles.map((title, index) => (
+              {guessTarget === 'song' ? this.state.randomTitles.filter(title => title).map((title, index) => (
                 <Button
                   key={index}
                   classes={[styles.titleButton]}
@@ -270,6 +296,15 @@ class Game extends React.Component<
                   disabled={!isPlaying}
                 >
                   {title}
+                </Button>
+              )) : this.state.randomArtists.filter(artist => artist).map((artist, index) => (
+                <Button
+                  key={index}
+                  classes={[styles.titleButton]}
+                  onClick={this.handleRandomTitleButtonClick}
+                  disabled={!isPlaying}
+                >
+                  {artist}
                 </Button>
               ))}
             </div>)}

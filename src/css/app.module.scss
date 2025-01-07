@@ -90,8 +90,8 @@
   padding: 12px !important;
 
   position: fixed !important;
-  bottom: 4px;
-  right: 4px;
+  top: 125px;
+  right: 50px;
 }
 
 .SettingsButton {
@@ -100,13 +100,13 @@
   padding: 12px !important;
 
   position: fixed !important;
-  bottom: 4px;
-  left: 4px;
+  top: 100px;
+  right: 50px;
 }
 
 .resetButton{
   position: fixed !important;
-  bottom: 25px;
+  bottom: 125px;
   right: 25px;
   color: var(--spice-text) !important;
   background-color: var(--spice-notification-error) !important;
@@ -123,9 +123,11 @@
   font-size: clamp(0.5rem, 2vw, 1.25rem); // Reduces the maximum font size
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   line-height: 1.5;
-  white-space: nowrap;
+  white-space: normal; // Allow text to wrap
   display: flex;
   align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis; // Add ellipsis for overflow text
 
   &:hover {
     background-color: rgb(100, 149, 237);
@@ -136,48 +138,49 @@
   }
 }
 
-.settingsContainer{
+.settingsContainer {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.settingsRow{
+.settingsRow {
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
   align-items: center;
+  width: 45%;
   margin-bottom: 10px;
   border: 1px solid #ffffff;
   padding: 10px;
   border-radius: 5px;
 }
 
-.settingsLabel{
-  flex: 1;
+.settingsLabel {
   white-space: nowrap;
   font-size: 1.5rem;
-  padding-right: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.settingsSelect{
-  flex: 1; 
+.settingsSelect {
   font-size: 1rem;
   height: 30px;
-  width: 300px;
+  width: 100%;
 }
 
-.settingsOption{
+.settingsOption {
   font-size: 1rem;
 }
 
-.similarityDisplay{
-  font-size: 2rem;
-  font-style: bold;
-  padding: 10px;
+.similarityDisplay {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding-left: 10px;
 }
 
 .settingsInput {
-  flex: 1;
   -webkit-appearance: none;
   appearance: none;
   width: 100%;

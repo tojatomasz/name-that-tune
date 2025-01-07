@@ -14,6 +14,7 @@
     "sendingURIs_one": "Sending {{count}} URI to $t(appName)",
     "sendingURIs_other": "Sending {{count}} URIs to $t(appName)",
     "gobacktogamebutton": "Go back to game",
+    "switchingToNextSong": "You won! Switching to next song in {{seconds}} seconds",
     "stats": {
       "title": "Stats",
       "time": "Time",
@@ -38,6 +39,12 @@
       "inputMethod": "Input method",
       "inputKeyboard": "Keyboard",
       "inputButtons": "Buttons",
+      "guessTarget": "Guess target",
+      "guessSong": "Song",
+      "guessArtist": "Artist",
+      "autoNextSongDelay": "Auto next song delay",
+      "disabled": "Disabled",
+      "seconds": "seconds",
       "stageScaling": "Stage scaling",
       "stageScalingNumber": "Shorter by {{multiplier}} times"
     }
