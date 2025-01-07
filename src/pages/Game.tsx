@@ -35,6 +35,8 @@ class Game extends React.Component<
     countdown: number;
   }
 > {
+  countdownInterval: NodeJS.Timeout | null = null;
+
   state = {
     // What guess you're on
     stage: 0,
@@ -72,6 +74,10 @@ class Game extends React.Component<
 
   componentWillUnmount() {
     this.audioManager.unlisten();
+    // Clear the countdown interval if it exists
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
     //add cleanup for keyboard shortcuts
   }
 
@@ -148,10 +154,11 @@ class Game extends React.Component<
         toggleIsGuessing(false);
         if (this.state.settings.autoNextSongDelay > 0) {
           this.setState({ countdown: this.state.settings.autoNextSongDelay });
-          const countdownInterval = setInterval(() => {
+          this.countdownInterval = setInterval(() => {
             this.setState((prevState) => ({ countdown: prevState.countdown - 1 }), () => {
               if (this.state.countdown <= 0) {
-                clearInterval(countdownInterval);
+                clearInterval(this.countdownInterval);
+                this.countdownInterval = null;
                 this.nextSong();
               }
             });
@@ -184,6 +191,12 @@ class Game extends React.Component<
   };
 
   nextSong = () => {
+    // Clear the countdown interval if it exists
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
+
     toggleIsGuessing(true);
     Spicetify.Player.next();
     Spicetify.Player.seek(0);
