@@ -78,7 +78,6 @@ class Game extends React.Component<
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
-    //add cleanup for keyboard shortcuts
   }
 
   playClick = () => {
@@ -86,13 +85,14 @@ class Game extends React.Component<
   };
 
   keyboardShortcuts = () => {
-    for (let i = 0; i < this.state.randomTitles.length; i++) {
-      Spicetify.Keyboard.registerShortcut((i + 1).toString(), (e) => {
-        this.setState({ guess: this.state.randomTitles[i] }, () => {
-          this.submitGuess(e);
+    const buttons = document.querySelectorAll(`.${styles.formButtonContainer} .${styles.titleButton}`);
+    buttons.forEach((button, index) => {
+      if (index < 5) {
+        Spicetify.Keyboard.registerShortcut((index + 1).toString(), () => {
+          (button as HTMLButtonElement).click();
         });
-      });
-    }
+      }
+    });
     Spicetify.Keyboard.registerShortcut('q', this.skipGuess);
     Spicetify.Keyboard.registerShortcut(('w'), (e) =>{
       if (this.state.gameState === GameState.Won || this.state.gameState === GameState.Lost)
@@ -129,7 +129,7 @@ class Game extends React.Component<
     });
   };
 
-  submitGuess = (e: React.FormEvent<HTMLFormElement>) => {
+  submitGuess = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     // Don't allow empty guesses
@@ -218,6 +218,7 @@ class Game extends React.Component<
       randomArtists: getRandomTrackTitles(true).artists,
     }, () => {
       this.audioManager.setEnd(stageToTime(this.state.stage)*1000);
+      this.keyboardShortcuts();
     });
   };
 
