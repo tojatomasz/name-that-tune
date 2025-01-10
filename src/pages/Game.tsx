@@ -265,16 +265,10 @@ class Game extends React.Component<
       <>
         <div className={styles.container}>
           <h1 className={styles.title}>{t('title')}</h1>
-          {gameWon ? (
-            <>
-              <h2 className={styles.subtitle}>{t('winMsg')}</h2>
-              {this.state.settings.autoNextSongDelay > 0 && (
-                <h3 className={styles.countdown}>
-                  {t('switchingToNextSong', { seconds: this.state.countdown })}
-                </h3>
-              )}
-            </>
-          ) : null}
+          <h2 className={`${styles.subtitle} ${!gameWon ? styles.hidden : ''}`}>{t('winMsg')}</h2>
+          <h3 className={`${styles.countdown} ${!gameWon || this.state.settings.autoNextSongDelay <= 0 ? styles.hidden : ''}`}>
+            {t('switchingToNextSong', { seconds: this.state.countdown })}
+          </h3>
           {keyboardInput ? <h2 className={styles.hint}>{(this.state.hint)}</h2> : null }
           {keyboardInput ? <h2 className={styles.similarity}>{(this.state.similarity)}</h2> : null}
           {keyboardInput &&(
